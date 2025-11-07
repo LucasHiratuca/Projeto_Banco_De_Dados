@@ -14,10 +14,8 @@ cursor.execute(
             Telefone INTEGER (255) NOT NULL,
             Nome VARCHAR (255) NOT NULL,
             Objetivo_Treino VARCHAR (255),
-            ID_Treino INTEGER (11) NOT NULL,
             Tipo_Plano VARCHAR (255),
             CPF_Personal INTEGER (11) NOT NULL UNIQUE,
-            FOREIGN KEY ID_Treino REFERENCES Treino(ID_Treino),
             FOREIGN KEY Tipo_Plano REFERENCES Plano(Tipo_Plano),
             FOREIGN KEY CPF_Personal REFERENCES Personal(CPF_Personal)
         ) ENGINE=InnoDB;

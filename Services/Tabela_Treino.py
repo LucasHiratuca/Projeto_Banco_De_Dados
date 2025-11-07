@@ -14,6 +14,8 @@ cursor.execute(
             Exercicios_Aerobicos VARCHAR (255),
             Exercicios_Maquina VARCHAR (255),
             Carga INTEGER (11)
+            CPF_Aluno INTEGER (11) UNIQUE NOT NULL
+            FOREIGN KEY CPF_Aluno REFERENCES Aluno(CPF_Aluno)
         ) ENGINE=InnoDB;
     '''
 )
