@@ -10,10 +10,10 @@ cursor.execute(
     '''
         CREATE TABLE Professor(
             CPF_Professor INTEGER (11) UNIQUE NOT NULL PRIMARY KEY,
-            RG INTEGER (11) UNIQUE NOT NULL,
-            Nome VARCHAR (255) NOT NULL,
-            Horários TIME NOT NULL,
-            Telefone INTEGER (11) UNIQUE NOT NULL
+            RG_Professor INTEGER (11) UNIQUE NOT NULL,
+            Nome_Professor VARCHAR (255) NOT NULL,
+            Horarios_Professor TIME NOT NULL,
+            Telefone_Professor INTEGER (11) UNIQUE NOT NULL
         ) ENGINE=InnoDB;
     '''
 )

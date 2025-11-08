@@ -10,9 +10,9 @@ cursor.execute(
     '''
         CREATE TABLE Aluno(
             CPF_Aluno INTEGER (11) UNIQUE PRIMARY KEY NOT NULL
-            RG INTEGER (11) UNIQUE NOT NULL,
-            Telefone INTEGER (255) NOT NULL,
-            Nome VARCHAR (255) NOT NULL,
+            RG_Aluno INTEGER (11) UNIQUE NOT NULL,
+            Telefone_Aluno INTEGER (255) NOT NULL,
+            Nome_Aluno VARCHAR (255) NOT NULL,
             Objetivo_Treino VARCHAR (255),
             Tipo_Plano VARCHAR (255),
             CPF_Personal INTEGER (11) NOT NULL UNIQUE,

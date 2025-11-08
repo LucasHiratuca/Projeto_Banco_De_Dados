@@ -25,20 +25,35 @@ def incluirPessoa(pessoa):
                 pessoa.get_tipo_plano(),
                 pessoa.get_cpf_personal(),
             )) 
-        elif isinstance(funcionario, Vendedor):
+
+        elif isinstance(pessoa, Professor):
             cursor.execute("""
-                INSERT INTO funcionario (codigo, nome, tipo, salarioBase, comissao)
+                INSERT INTO Professor (CPF_Professor, RG_Professor, Nome_Professor, Horario_Professor, Telefone_Professor)
                 VALUES (?, ?, ?, ?, ?)
             """, (
-                funcionario.get_codigo(),
-                funcionario.get_nome(), 'Vendedor',
-                funcionario.get_salarioBase(),
-                funcionario.get_comissao()
-            ))     
+                pessoa.get_cpf_professor(),
+                pessoa.get_rg_professor(),
+                pessoa.get_nome_professor(),
+                pessoa.get_telefone_professor(),
+                pessoa.get_horario_professor()
+            ))
+
+        elif isinstance(pessoa, Personal):
+            cursor.execute("""
+                INSERT INTO Personal (CPF_Personal, RG_Personal, Nome_Personal, Horario_Personal, Telefone_Personal)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                pessoa.get_cpf_personal(),
+                pessoa.get_rg_personal(),
+                pessoa.get_nome_personal(),
+                pessoa.get_telefone_personal(),
+                pessoa.get_horario_personal()
+            )) 
+
         conexao.commit()
-        print("Funcionário inserido com sucesso!")
+        print("Dados inseridos com sucesso!")
     except sqlite3.Error as e:
-        print(f"Erro ao inserir funcionário: {e}")
+        print(f"Erro ao inserir uma novo usuário: {e}")
     finally:
         conexao.close()
 
@@ -83,6 +98,7 @@ def consultarFuncionario():
     
     finally:
         conexao.close()
+    
     
 def excluirFuncionario(codigo):
     try:
