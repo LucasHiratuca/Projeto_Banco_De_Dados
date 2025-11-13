@@ -25,8 +25,6 @@ def incluirPessoa(pessoa):
                 pessoa.get_tipo_plano(),
                 pessoa.get_cpf_pers(),
             )) 
-<<<<<<< HEAD
-
         elif isinstance(pessoa, Professor):
             cursor.execute("""
                 INSERT INTO Professor (CPF_Professor, RG_Professor, Nome_Professor, Horario_Professor, Telefone_Professor)
@@ -50,123 +48,169 @@ def incluirPessoa(pessoa):
                 pessoa.get_telefone_personal(),
                 pessoa.get_horario_personal()
             )) 
-
-        conexao.commit()
-        print("Dados inseridos com sucesso!")
-    except sqlite3.Error as e:
-        print(f"Erro ao inserir uma novo usuário: {e}")
-=======
-        elif isinstance(pessoa, Professor):
-            cursor.execute("""
-                INSERT INTO funcionario (CPF_Prof, RG_Prof, Nome_Prof, Horario_Prof, Telefone_Prof)
-                VALUES (?, ?, ?, ?, ?)
-            """, (
-                pessoa.get_cpf_prof(),
-                pessoa.get_rg_prof(),
-                pessoa.get_nome_prof(),
-                pessoa.get_horario_prof(),
-                pessoa.get_numero_prof()
-            ))     
-        elif isinstance(pessoa, Personal):
-            cursor.execute("""
-                INSERT INTO funcionario (CPF_Personal, RG_Personal, Nome_Personal, Horario_Personal, Telefone_Personal)
-                VALUES (?, ?, ?, ?, ?)
-            """, (
-                pessoa.get_cpf_pers(),
-                pessoa.get_rg_pers(),
-                pessoa.get_nome_pers(),
-                pessoa.get_horario_pers(),
-                pessoa.get_numero_pers()
-            ))     
-
         conexao.commit()
         print("Funcionário inserido com sucesso!")
-
     except sqlite3.Error as e:
         print(f"Erro ao inserir funcionário: {e}")
-
->>>>>>> 6f8c5ea (Terceiro Commit:)
     finally:
         conexao.close()
 
 
-
-def consultarFuncionario():
+def consultarAluno():
     conexao = conectaBD()
     cursor = conexao.cursor()
     
     try:
-        cursor.execute('SELECT * FROM funcionario')
+        cursor.execute('SELECT * FROM Aluno')
         rows = cursor.fetchall()
-        
-        # Lista para armazenar os dados dos funcionários
+          # Lista para armazenar os dados dos Alunos
         dados = []
         
         for row in rows:
-            codigo, nome, tipo, diasTrabalhados, valorDia, salarioBase, comissao = row
+            CPF_Aluno, RG, Nome, Telefone, Objetivo_Treino, Tipo_Plano, CPF_Personal = row
             
-            if tipo == 'FreeLancer':
-                funcionario = FreeLancer(codigo, nome, diasTrabalhados, valorDia)
-                salario = funcionario.calcularSalario()
-            elif tipo == 'Vendedor':
-                funcionario = Vendedor(codigo, nome, salarioBase, comissao)
-                salario = funcionario.calcularSalario()
-            
-            # Adiciona os dados do funcionário à lista
-            dados.append({
-                "Código": codigo,
-                "Nome": nome,
-                "Tipo": tipo,
-                "Dias Trabalhados": diasTrabalhados,
-                "Valor Dia": valorDia,
-                "Salário Base": salarioBase,
-                "Comissão": comissao,
-                "Salário Calculado": salario
-            })
+        # Adiciona os dados do funcionário à lista
+        dados.append({
+            "CPF_Aluno: ": CPF_Aluno,
+            "RG: ": RG,
+            "Nome: ": Nome,
+            "Telefone: ": Telefone,
+            "Objetivo de Treino: ": Objetivo_Treino,
+            "Tipo de Plano: ": Tipo_Plano,
+            "CPF do Personal": CPF_Personal
+             })
         
         return dados
     
     except sqlite3.Error as e:
-        print(f"Erro ao consultar funcionários: {e}")
+        print(f"Erro ao consultar os alunos: {e}")
         return []
+    finally:
+        conexao.close()
+
+
+def consultarProfessor():
+    conexao = conectaBD()
+    cursor = conexao.cursor()
     
+    try:
+        cursor.execute('SELECT * FROM Professor')
+        rows = cursor.fetchall()
+        
+        # Lista para armazenar os dados dos professores
+        dados = []
+        
+        for row in rows:
+            CPF_Professor, RG, Nome, Horario, Telefone = row
+            
+        # Adiciona os dados do funcionário à lista
+        dados.append({
+            "CPF Professor: ": CPF_Professor,
+            "RG: ": RG,
+            "Nome: ": Nome,
+            "Horario: ": Horario,
+            "Telefone: ": Telefone
+             })
+        
+        return dados
+    
+    except sqlite3.Error as e:
+        print(f"Erro ao consultar os Professores: {e}")
+        return []
+    finally:
+        conexao.close()
+
+
+def consultarPersonal():
+    conexao = conectaBD()
+    cursor = conexao.cursor()
+    
+    try:
+        cursor.execute('SELECT * FROM Personal')
+        rows = cursor.fetchall()
+        
+        # Lista para armazenar os dados dos personais
+        dados = []
+        
+        for row in rows:
+            CPF_Personal, RG, Nome, Horario, Telefone = row
+            
+        # Adiciona os dados do funcionário à lista
+        dados.append({
+            "CPF Personal: ": CPF_Personal,
+            "RG: ": RG,
+            "Nome: ": Nome,
+            "Horario: ": Horario,
+            "Telefone: ": Telefone
+             })
+        
+        return dados
+    
+    except sqlite3.Error as e:
+        print(f"Erro ao consultar os Personais: {e}")
+        return []
     finally:
         conexao.close()
     
     
-def excluirFuncionario(codigo):
+def excluirAluno(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM funcionario WHERE codigo = ?", (codigo,))
+        cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf))
         conexao.commit()
-        print(f"Funcionario com codigo {codigo} excluído com sucesso!")
+        print(f"Aluno com codigo {cpf} excluído com sucesso!")
     except sqlite3.Error as e:
-        print(f"Erro ao excluir funcionario: {e}")
+        print(f"Erro ao excluir o aluno: {e}")
     finally:
         if conexao:
             conexao.close()
 
-def alterarFuncionario(funcionario):
+def excluirProfessor(cpf):
+    try:
+        conexao = conectaBD()
+        cursor = conexao.cursor()
+        cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf))
+        conexao.commit()
+        print(f"Professor com codigo {cpf} excluído com sucesso!")
+    except sqlite3.Error as e:
+        print(f"Erro ao excluir o professor: {e}")
+    finally:
+        if conexao:
+            conexao.close()
+
+def excluirPersonal(cpf):
+    try:
+        conexao = conectaBD()
+        cursor = conexao.cursor()
+        cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf))
+        conexao.commit()
+        print(f"Personal com codigo {cpf} excluído com sucesso!")
+    except sqlite3.Error as e:
+        print(f"Erro ao excluir o personal: {e}")
+    finally:
+        if conexao:
+            conexao.close()
+
+def alterarAluno(aluno):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
         cursor.execute('''
             UPDATE funcionario 
-            SET codigo = ?, nome = ?, tipo = ?, diasTrabalhados = ?, valorDia = ?, salarioBase = ?, comissao = ?
-            WHERE codigo = ?
+            SET CPF_Aluno = ?, RG = ?, Telefone = ?, Nome = ?, Objetivo_Treino = ?, Tipo_Plano = ?, CPF_Personal = ?
+            WHERE CPF_Aluno = ?
         ''', (
-            funcionario["Código"],
-            funcionario["Nome"],
-            funcionario["Tipo"],
-            funcionario["Dias Trabalhados"],
-            funcionario["Valor Dia"],
-            funcionario["Salário Base"],
-            funcionario["Comissão"],
-            funcionario["Código"]
+            aluno["CPF_Aluno"],
+            aluno["RG"],
+            aluno["Telefone"],
+            aluno["Nome"],
+            aluno["Objetivo_Treino"],
+            aluno["Tipo_Plano"],
+            aluno["CPF_Personal"]
         ))
         conexao.commit()
-        print(f"Funcionário com código {funcionario['Código']} alterado com sucesso!")
+        print(f"Funcionário com código {aluno['CPF_Aluno']} alterado com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao alterar Funcionário: {e}")
     finally:

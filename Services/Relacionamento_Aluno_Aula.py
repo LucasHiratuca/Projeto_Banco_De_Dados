@@ -8,9 +8,9 @@ cursor = conexao.cursor()
  
 cursor.execute(
     '''
-        CREATE TABLE Aluno_Aula(
+        CREATE TABLE IF NOT EXISTS Aluno_Aula(
             ID_Aula INTEGER NOT NULL,
-            CPF_Aluno INTEGER NOT NULL,
+            CPF_Aluno INTEGER NOT NULL UNIQUE,
             PRIMARY KEY (ID_Aula, CPF_Aluno),
             FOREIGN KEY (ID_Aula) REFERENCES Aula (ID_Aula),
             FOREIGN KEY (CPF_Aluno) REFERENCES Aluno (CPF_Aluno)

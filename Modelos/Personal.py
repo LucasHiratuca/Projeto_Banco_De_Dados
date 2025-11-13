@@ -1,6 +1,4 @@
-import abc as ABC
-
-class Personal(ABC):
+class Personal():
     def _init_(self, cpf, rg, nome, horario_pers, telefone):
         self._cpf = cpf
         self._rg = rg

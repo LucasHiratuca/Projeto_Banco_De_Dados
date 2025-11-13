@@ -8,12 +8,12 @@ cursor = conexao.cursor()
  
 cursor.execute(
     '''
-        CREATE TABLE Aula(
-            ID_Aula INTEGER (11) NOT NULL UNIQUE PRIMARY KEY,
-            Tipo_Aula VARCHAR (255) UNIQUE NOT NULL,
-            CPF_Professor INTEGER (11) UNIQUE NOT NULL,
-            FOREIGN KEY CPF_Professor REFERENCES Professor(CPF_Professor)
-        ) ENGINE=InnoDB;
+        CREATE TABLE IF NOT EXISTS Aula(
+            ID_Aula INTEGER PRIMARY KEY,
+            Tipo_Aula TEXT UNIQUE NOT NULL,
+            CPF_Professor INTEGER UNIQUE NOT NULL,
+            FOREIGN KEY (CPF_Professor) REFERENCES Professor(CPF_Professor)
+        );
     '''
 )
 cursor.close()
