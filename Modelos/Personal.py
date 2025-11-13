@@ -1,4 +1,4 @@
-class Personal(ABC):
+class Personal:
     def _init_(self, cpf_pers, rg_pers, nome_pers, horario_pers, telefone_pers):
         self._cpf_pers = cpf_pers
         self._rg_pers = rg_pers
