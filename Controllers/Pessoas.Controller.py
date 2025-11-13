@@ -33,8 +33,8 @@ def incluirPessoa(pessoa):
                 pessoa.get_cpf_professor(),
                 pessoa.get_rg_professor(),
                 pessoa.get_nome_professor(),
-                pessoa.get_telefone_professor(),
-                pessoa.get_horario_professor()
+                pessoa.get_horario_professor(),
+                pessoa.get_telefone_professor()        
             ))
 
         elif isinstance(pessoa, Personal):
@@ -45,8 +45,9 @@ def incluirPessoa(pessoa):
                 pessoa.get_cpf_personal(),
                 pessoa.get_rg_personal(),
                 pessoa.get_nome_personal(),
-                pessoa.get_telefone_personal(),
-                pessoa.get_horario_personal()
+                pessoa.get_horario_personal(),
+                pessoa.get_telefone_personal()
+                
             )) 
         conexao.commit()
         print("Funcionário inserido com sucesso!")
@@ -69,15 +70,15 @@ def consultarAluno():
         for row in rows:
             CPF_Aluno, RG, Nome, Telefone, Objetivo_Treino, Tipo_Plano, CPF_Personal = row
             
-        # Adiciona os dados do funcionário à lista
-        dados.append({
-            "CPF_Aluno: ": CPF_Aluno,
-            "RG: ": RG,
-            "Nome: ": Nome,
-            "Telefone: ": Telefone,
-            "Objetivo de Treino: ": Objetivo_Treino,
-            "Tipo de Plano: ": Tipo_Plano,
-            "CPF do Personal": CPF_Personal
+            # Adiciona os dados do funcionário à lista
+            dados.append({
+                "CPF_Aluno: ": CPF_Aluno,
+                "RG: ": RG,
+                "Nome: ": Nome,
+                "Telefone: ": Telefone,
+                "Objetivo de Treino: ": Objetivo_Treino,
+                "Tipo de Plano: ": Tipo_Plano,
+                "CPF do Personal": CPF_Personal
              })
         
         return dados
@@ -103,14 +104,14 @@ def consultarProfessor():
         for row in rows:
             CPF_Professor, RG, Nome, Horario, Telefone = row
             
-        # Adiciona os dados do funcionário à lista
-        dados.append({
-            "CPF Professor: ": CPF_Professor,
-            "RG: ": RG,
-            "Nome: ": Nome,
-            "Horario: ": Horario,
-            "Telefone: ": Telefone
-             })
+            # Adiciona os dados do funcionário à lista
+            dados.append({
+                "CPF Professor: ": CPF_Professor,
+                "RG: ": RG,
+                "Nome: ": Nome,
+                "Horario: ": Horario,
+                "Telefone: ": Telefone
+            })
         
         return dados
     
@@ -133,16 +134,17 @@ def consultarPersonal():
         dados = []
         
         for row in rows:
+
             CPF_Personal, RG, Nome, Horario, Telefone = row
             
         # Adiciona os dados do funcionário à lista
-        dados.append({
-            "CPF Personal: ": CPF_Personal,
-            "RG: ": RG,
-            "Nome: ": Nome,
-            "Horario: ": Horario,
-            "Telefone: ": Telefone
-             })
+            dados.append({
+                "CPF Personal: ": CPF_Personal,
+                "RG: ": RG,
+                "Nome: ": Nome,
+                "Horario: ": Horario,
+                "Telefone: ": Telefone
+                })
         
         return dados
     
@@ -157,9 +159,9 @@ def excluirAluno(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf))
+        cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf,))
         conexao.commit()
-        print(f"Aluno com codigo {cpf} excluído com sucesso!")
+        print(f"Aluno com codigo {cpf,} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir o aluno: {e}")
     finally:
@@ -170,9 +172,9 @@ def excluirProfessor(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf))
+        cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf,))
         conexao.commit()
-        print(f"Professor com codigo {cpf} excluído com sucesso!")
+        print(f"Professor com codigo {cpf,} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir o professor: {e}")
     finally:
@@ -183,9 +185,9 @@ def excluirPersonal(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf))
+        cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf,))
         conexao.commit()
-        print(f"Personal com codigo {cpf} excluído com sucesso!")
+        print(f"Personal com codigo {cpf,} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir o personal: {e}")
     finally:
@@ -197,7 +199,7 @@ def alterarAluno(aluno):
         conexao = conectaBD()
         cursor = conexao.cursor()
         cursor.execute('''
-            UPDATE funcionario 
+            UPDATE Aluno 
             SET CPF_Aluno = ?, RG = ?, Telefone = ?, Nome = ?, Objetivo_Treino = ?, Tipo_Plano = ?, CPF_Personal = ?
             WHERE CPF_Aluno = ?
         ''', (
