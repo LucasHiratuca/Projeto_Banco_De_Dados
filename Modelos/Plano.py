@@ -1,5 +1,5 @@
 class Plano:
-    def_init_(self, tipo_plano, id_plano):
+    def _init_(self, tipo_plano, id_plano):
         self._id_plano = id_plano
         self._tipo_plano = tipo_plano
 
