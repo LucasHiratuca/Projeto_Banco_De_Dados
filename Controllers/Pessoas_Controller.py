@@ -1,8 +1,8 @@
 # Controllers/PessoasController.py
 import sqlite3
-from Modelos.Aluno import Aluno
-from Modelos.Professor import Professor
-from Modelos.Personal import Personal
+from Models.Aluno import Aluno
+from Models.Professor import Professor
+from Models.Personal import Personal
 
 def conectaBD():
     conexao = sqlite3.connect("Academia.db")
@@ -212,9 +212,9 @@ def alterarAluno(aluno):
             aluno["CPF_Personal"]
         ))
         conexao.commit()
-        print(f"Funcionário com código {aluno['CPF_Aluno']} alterado com sucesso!")
+        print(f"Aluno com CPF {aluno['CPF_Aluno']} alterado com sucesso!")
     except sqlite3.Error as e:
-        print(f"Erro ao alterar Funcionário: {e}")
+        print(f"Erro ao alterar Aluno: {e}")
     finally:
         if conexao:
             conexao.close()
