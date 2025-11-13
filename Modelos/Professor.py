@@ -1,6 +1,4 @@
-from abc import ABC
-
-class Professor(ABC):
+class Professor:
     def __init__(self, cpf_prof, rg_prof, nome_prof, horario_prof, telefone_prof):
         self._cpf_prof = cpf_prof
         self._rg_prof = rg_prof
@@ -11,31 +9,31 @@ class Professor(ABC):
     def get_cpf_prof(self):
         return self._cpf_prof
 
-    def set_cpf(self, cpf_prof):
+    def set_cpf_prof(self, cpf_prof):
         self._cpf_prof = cpf_prof
  
-    def get_rg(self):
+    def get_rg_prof(self):
         return self._rg_prof
 
-    def set_rg(self, rg_prof):
+    def set_rg_prof(self, rg_prof):
         self._rg = rg_prof
 
-    def get_nome(self):
-        return self._Nome_Prof
+    def get_nome_prof(self):
+        return self._nome_prof
 
-    def set_nome(self, nome):
-        self._nome = nome
+    def set_nome_prof(self, nome):
+        self._nome = nome_prof
      
-    def get_horario(self):
+    def get_horario_prof(self):
         return self._horario_prof
 
-    def set_time(self, horario_prof):
-        self._horario = horario_prof
+    def set_horario_prof(self, horario_prof):
+        self._horario_prof = horario_prof
      
-    def get_telefone(self):
-        return self._telefone
+    def get_telefone_prof(self):
+        return self._telefone_prof
 
-    def set_telefone(self, telefone):
-        self._telefone = telefone
+    def set_telefone_prof(self, telefone_prof):
+        self._telefone_prof = telefone_prof
         
         pass

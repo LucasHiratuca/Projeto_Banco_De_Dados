@@ -1,19 +1,25 @@
 class Plano:
-    def_init_(self,tipo,ID_Produto_Produto):
-        self._ID_Produto = ID_Produto
-        self._tipo = tipo
+    def _init_(self, tipo_plano, id_plano):
+        self._id_plano = id_plano
+        self._tipo_plano = tipo_plano
 
-    @dataclass
-   def get_id(self):
-        return self._ID_Produto
 
-    def set_ID_Produto(self, ID_Produto):
-        self._ID_Produto = ID_Produto   
+    @property
+    def id_plano(self):
+        return self._id_plano
 
-    def get_tipo(self):
-        return self._tipo
+    @id_plano.setter
+    def id_plano(self, value):
+        self._id_plano = value
 
-    def set_tipo(self, tipo):
-        self._tipo = tipo
+    @property
+    def tipo_palno(self):
+        return self._tipo_plano
+
+    @tipo_palno.setter
+    def tipo_palno(self, value):
+        self._tipo_plano = value
+
+   
 
         pass

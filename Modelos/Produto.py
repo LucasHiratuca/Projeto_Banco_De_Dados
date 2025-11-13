@@ -1,25 +1,25 @@
 class Produto:
-    def_init_(self,tipo,nome,cpf):
-        self._tipo = tipo
-        self._nome = nome
-        self._cpf = cpf
+    def _init_(self,tipo_pr ,nome_pr ,cpf_aluno):
+        self._tipo_pr = tipo_pr
+        self._nome_pr_ = nome_pr
+        self._cpf_aluno = cpf_aluno
 
-   def get_tipo(self):
-        return self._tipo
+    def get_tipo_pr(self):
+        return self._tipo_pr
 
-    def set_tipo(self, tipo):
-        self._tipo = tipo   
+    def set_tipo_pr(self, tipo_pr):
+        self._tipo_pr = tipo_pr   
 
-    def get_nome(self):
-        return self._nome
+    def get_nome_pr(self):
+        return self._nome_pr
 
-    def set_nome(self, nome):
-        self._nome = nome
+    def set_nome_pr(self, nome_pr):
+        self._nome_pr = nome_pr
 
-    def get_cpf(self):
-        return self._cpf
+    def get_cpf_aluno(self):
+        return self._cpf_aluno
 
-    def set_cpf(self, cpf):
-        self._cpf = cpf
+    def set_cpf_aluno(self, cpf_aluno):
+        self._cpf_aluno = cpf_aluno
 
         pass
