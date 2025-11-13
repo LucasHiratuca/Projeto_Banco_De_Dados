@@ -1,5 +1,5 @@
 class Treino_Maquina:
-    def_init_(self, id_tr, nome_mqn):
+    def _init_(self, id_tr, nome_mqn):
         self._id_tr = id_tr
         self._nome_mqn = nome_mqn
 
@@ -21,3 +21,4 @@ class Treino_Maquina:
         self._nome_mqn = value
 
         pass
+
