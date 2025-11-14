@@ -1,4 +1,7 @@
 # Controllers/PessoasController.py
+
+# CRUD de Aluno, Professor e Personal
+
 import sqlite3
 from Models.Aluno import Aluno
 from Models.Professor import Professor
@@ -17,13 +20,13 @@ def incluirPessoa(pessoa):
                 INSERT INTO Aluno (CPF_Aluno, RG_Aluno, Telefone, Nome, Objetivo_Treino, Tipo_Plano, CPF_Personal)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
-                pessoa.get_cpf_aluno(),
-                pessoa.get_rg_aluno(),
-                pessoa.get_telefone_al(),
-                pessoa.get_nome_al(),
-                pessoa.get_objetivo_treino(),
-                pessoa.get_tipo_plano(),
-                pessoa.get_cpf_pers(),
+                pessoa.cpf_aluno(),
+                pessoa.rg_aluno(),
+                pessoa.telefone_aluno(),
+                pessoa.nome_aluno(),
+                pessoa.objetivo_treino(),
+                pessoa.tipo_plano(),
+                pessoa.cpf_pers(),
             )) 
         elif isinstance(pessoa, Professor):
             cursor.execute("""
@@ -200,21 +203,69 @@ def alterarAluno(aluno):
         cursor = conexao.cursor()
         cursor.execute('''
             UPDATE Aluno 
-            SET CPF_Aluno = ?, RG = ?, Telefone = ?, Nome = ?, Objetivo_Treino = ?, Tipo_Plano = ?, CPF_Personal = ?
+            SET RG = ?, Telefone = ?, Nome = ?, Objetivo_Treino = ?, Tipo_Plano = ?, CPF_Personal = ?
             WHERE CPF_Aluno = ?
         ''', (
-            aluno["CPF_Aluno"],
             aluno["RG"],
             aluno["Telefone"],
             aluno["Nome"],
             aluno["Objetivo_Treino"],
             aluno["Tipo_Plano"],
-            aluno["CPF_Personal"]
+            aluno["CPF_Personal"],
+            aluno["CPF_Aluno"]
         ))
         conexao.commit()
         print(f"Aluno com CPF {aluno['CPF_Aluno']} alterado com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao alterar Aluno: {e}")
+    finally:
+        if conexao:
+            conexao.close()
+
+
+def alterarProfessor(professor):
+    try:
+        conexao = conectaBD()
+        cursor = conexao.cursor()
+        cursor.execute('''
+            UPDATE Professor 
+            SET RG = ?, Nome = ?, Telefone = ?, Horario = ?
+            WHERE CPF_Professor = ?
+        ''', (
+            professor["RG"],
+            professor["Nome"],
+            professor["Telefone"],
+            professor["Horario"],
+            professor["CPF_Professor"],
+        )) 
+        conexao.commit()
+        print(f"Professor com CPF {professor['CPF_Professor']} alterado com sucesso!")
+    except sqlite3.Error as e:
+        print(f"Erro ao alterar Professor: {e}")
+    finally:
+        if conexao:
+            conexao.close()
+
+        
+def alterarPersonal(personal):
+    try:
+        conexao = conectaBD()
+        cursor = conexao.cursor()
+        cursor.execute('''
+            UPDATE Personal 
+            SET RG = ?, Nome = ?, Telefone = ?, Horario = ?
+            WHERE CPF_Personal = ?
+        ''', (
+            personal["RG"],
+            personal["Nome"],
+            personal["Telefone"],
+            personal["Horario"],
+            personal["CPF_Personal"],
+        )) 
+        conexao.commit()
+        print(f"Personal com CPF {personal['CPF_Personal']} alterado com sucesso!")
+    except sqlite3.Error as e:
+        print(f"Erro ao alterar Personal: {e}")
     finally:
         if conexao:
             conexao.close()

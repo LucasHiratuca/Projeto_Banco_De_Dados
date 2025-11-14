@@ -2,21 +2,31 @@
 import streamlit as st
 import pandas as pd
 #Parte do Controller
-from Controllers.AlunoController import *
+from Controllers.Pessoas_Controller import *
 from Models.Aluno import Aluno
+from Models.Professor import Professor
+from Models.Personal import Personal
 
-def show_aluno_page():
-    st.title('Cadastro de Alunos')
-    operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
+def show_pessoas_page():
+    st.title('Cadastro de Pessoas')
 
-    if operacao == "Incluir":
-        aluno = (0, "", 0, 0.0)
+    entidade = st.sidebar.selectbox("Entidades", ["Aluno", "Personal", "Professor"])
+
+    if entidade == "Aluno":
+
+        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
+
+        if operacao == "Incluir":
+            aluno = Aluno(0, 0, 0, "", "", "", 0)
         
-        produto.set_descricao(st.text_input("Descrição:"))
-        produto.set_qtd(st.number_input("Quantidade:", min_value=0))
-        produto.set_valor_unitario(st.number_input("Valor Unitário (R$):", min_value=0.0, format="%.2f"))
-        
-        st.write(f"**Valor Total:** R$ {produto.calcular_valor_total():.2f}")
+            aluno.cpf_aluno = st.number_input("CPF do Aluno: ")
+            aluno.rg_aluno = st.number_input("Rg do Aluno: ")
+            aluno.telefone_aluno = st.number_input("Informe seu número: ")
+            aluno.objetivo_treino = st.text_input_("Nome do Aluno: ")
+            aluno.tipo_plano = st.text_input_("Nome do Aluno: ")
+            aluno.nome_aluno = st.text_input_("Nome do Aluno: ")
+            aluno.cpf_pers = st.number_input("CPF do Personal: ")
+            
         
         if st.button("Cadastrar"):
             incluir_produto(produto)
