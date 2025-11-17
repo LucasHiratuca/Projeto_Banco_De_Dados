@@ -1,16 +1,16 @@
 class Personal:
-    def _init_(self, cpf_pers, rg_pers, nome_pers, horario_pers, telefone_pers):
-        self._cpf_pers = cpf_pers
+    def _init_(self, cpf, rg_pers, nome_pers, horario_pers, telefone_pers):
+        self._cpf = cpf
         self._rg_pers = rg_pers
         self._nome_pers = nome_pers
         self._horario_pers = horario_pers
         self._telefone_pers = telefone_pers
 
-    def get_cpf_pers(self):
-        return self._cpf_pers_pers
+    def get_cpf(self):
+        return self._cpf
 
-    def set_cpf_pers(self, cpf_pers):
-        self._cpf_pers = cpf_pers
+    def set_cpf(self, cpf):
+        self._cpf = cpf
  
     def get_rg_pers(self):
         return self._rg_pers

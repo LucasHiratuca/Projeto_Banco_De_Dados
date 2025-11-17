@@ -1,6 +1,6 @@
 class Aluno:
-    def _init_(self, cpf_aluno, rg_aluno, telfone_aluno, nome_aluno, objetivo_treino, tipo_plano, cpf_pers):
-        self._cpf_aluno = cpf_aluno
+    def _init_(self, cpf, rg_aluno, telfone_aluno, nome_aluno, objetivo_treino, tipo_plano, cpf_pers):
+        self._cpf = cpf
         self._rg_aluno = rg_aluno
         self._telefone_aluno = telfone_aluno
         self._nome_aluno = nome_aluno
@@ -9,12 +9,12 @@ class Aluno:
         self._cpf_pers = cpf_pers
 
     @property
-    def cpf_aluno(self):
-        return self._cpf_aluno
+    def cpf(self):
+        return self._cpf
 
-    @cpf_aluno.setter
-    def cpf_aluno(self, value):
-        self._cpf_aluno = value
+    @cpf.setter
+    def cpf(self, value):
+        self._cpf = value
 
     @property
     def rg_aluno(self):

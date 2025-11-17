@@ -20,7 +20,7 @@ def incluirPessoa(pessoa):
                 INSERT INTO Aluno (CPF_Aluno, RG_Aluno, Telefone, Nome, Objetivo_Treino, Tipo_Plano, CPF_Personal)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
-                pessoa.cpf_aluno(),
+                pessoa.cpf(),
                 pessoa.rg_aluno(),
                 pessoa.telefone_aluno(),
                 pessoa.nome_aluno(),
@@ -33,11 +33,11 @@ def incluirPessoa(pessoa):
                 INSERT INTO Professor (CPF_Professor, RG_Professor, Nome_Professor, Horario_Professor, Telefone_Professor)
                 VALUES (?, ?, ?, ?, ?)
             """, (
-                pessoa.get_cpf_professor(),
-                pessoa.get_rg_professor(),
-                pessoa.get_nome_professor(),
-                pessoa.get_horario_professor(),
-                pessoa.get_telefone_professor()        
+                pessoa.cpf(),
+                pessoa.rg_prof(),
+                pessoa.nome_prof(),
+                pessoa.horario_prof(),
+                pessoa.telefone_prof()        
             ))
 
         elif isinstance(pessoa, Personal):
@@ -45,17 +45,17 @@ def incluirPessoa(pessoa):
                 INSERT INTO Personal (CPF_Personal, RG_Personal, Nome_Personal, Horario_Personal, Telefone_Personal)
                 VALUES (?, ?, ?, ?, ?)
             """, (
-                pessoa.get_cpf_personal(),
-                pessoa.get_rg_personal(),
-                pessoa.get_nome_personal(),
-                pessoa.get_horario_personal(),
-                pessoa.get_telefone_personal()
+                pessoa.cpf(),
+                pessoa.rg_personal(),
+                pessoa.nome_pers(),
+                pessoa.horario_pers(),
+                pessoa.telefone_pers()
                 
             )) 
         conexao.commit()
-        print("Funcionário inserido com sucesso!")
+        print("Entidade inserida com sucesso!")
     except sqlite3.Error as e:
-        print(f"Erro ao inserir funcionário: {e}")
+        print(f"Erro ao inserir a entidade: {e}")
     finally:
         conexao.close()
 

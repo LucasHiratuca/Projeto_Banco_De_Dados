@@ -1,16 +1,16 @@
 class Professor:
-    def __init__(self, cpf_prof, rg_prof, nome_prof, horario_prof, telefone_prof):
-        self._cpf_prof = cpf_prof
+    def __init__(self, cpf, rg_prof, nome_prof, horario_prof, telefone_prof):
+        self._cpf = cpf
         self._rg_prof = rg_prof
         self._nome_prof = nome_prof
         self._horario_prof = horario_prof
         self._telefone_prof = telefone_prof
 
-    def get_cpf_prof(self):
-        return self._cpf_prof
+    def get_cpf(self):
+        return self._cpf
 
-    def set_cpf_prof(self, cpf_prof):
-        self._cpf_prof = cpf_prof
+    def set_cpf(self, cpf):
+        self._cpf = cpf
  
     def get_rg_prof(self):
         return self._rg_prof
