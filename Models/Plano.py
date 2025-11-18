@@ -13,11 +13,11 @@ class Plano:
         self._id_plano = value
 
     @property
-    def tipo_palno(self):
+    def tipo_plano(self):
         return self._tipo_plano
 
-    @tipo_palno.setter
-    def tipo_palno(self, value):
+    @tipo_plano.setter
+    def tipo_plano(self, value):
         self._tipo_plano = value
 
    

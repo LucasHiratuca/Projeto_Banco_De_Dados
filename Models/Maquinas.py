@@ -1,16 +1,16 @@
 class Maquina:
-    def _init_(self, nome_mqn, id_mqn, parte_trabalhada):
-        self._nome_mqn = nome_mqn
+    def _init_(self, nome, id_mqn, parte_trabalhada):
+        self._nome = nome
         self._id_mqn = id_mqn
         self._parte_trabalhada = parte_trabalhada
         
 
     @property
-    def nome_mqn(self):
+    def nome(self):
         return self._nome_mqn
 
-    @nome_mqn.setter
-    def nome_mqn(self, value):
+    @nome.setter
+    def nome(self, value):
         self._nome_mqn = value
 
     @property

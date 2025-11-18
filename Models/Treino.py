@@ -1,6 +1,6 @@
 class Treino:
-    def _init_(self, id_tr, alongamentos, exercicios_arbcs, exercicios_mqn, carga_mqn, cpf_aluno):
-        self._id_tr = id_tr 
+    def _init_(self, id, alongamentos, exercicios_arbcs, exercicios_mqn, carga_mqn, cpf_aluno):
+        self._id = id 
         self._alongamentos = alongamentos
         self._exercicios_mqn = exercicios_mqn
         self._exercicios_arbcs = exercicios_arbcs
@@ -8,12 +8,12 @@ class Treino:
         self._cpf_aluno = cpf_aluno
 
     @property
-    def id_tr(self):
-        return self._id_tr
+    def id(self):
+        return self._id
 
-    @id_tr.setter
-    def id_tr(self, value):
-        self._id_tr = value
+    @id.setter
+    def id(self, value):
+        self._id = value
 
     @property
     def alongamentos(self):
