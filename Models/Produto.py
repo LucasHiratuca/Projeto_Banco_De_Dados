@@ -1,5 +1,5 @@
 class Produto:
-    def _init_(self,tipo_pr ,nome_pr ,cpf_aluno):
+    def __init__(self,tipo_pr ,nome_pr ,cpf_aluno):
         self._tipo_pr = tipo_pr
         self._nome_pr_ = nome_pr
         self._cpf_aluno = cpf_aluno

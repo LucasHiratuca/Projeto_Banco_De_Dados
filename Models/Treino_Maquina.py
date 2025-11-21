@@ -1,5 +1,5 @@
 class Treino_Maquina:
-    def _init_(self, id_tr, nome_mqn):
+    def __init__(self, id_tr, nome_mqn):
         self._id_tr = id_tr
         self._nome_mqn = nome_mqn
 

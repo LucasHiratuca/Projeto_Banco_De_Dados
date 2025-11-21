@@ -1,5 +1,5 @@
 class Alula:
-    def _init_(self, id_aula, tipo_aula, id_professor):
+    def __init__(self, id_aula, tipo_aula, id_professor):
         self._id_aula = id_aula
         self._tipo_aula = tipo_aula
         self._id_professor = id_professor

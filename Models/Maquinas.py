@@ -1,5 +1,5 @@
 class Maquina:
-    def _init_(self, nome, id_mqn, parte_trabalhada):
+    def __init__(self, nome, id_mqn, parte_trabalhada):
         self._nome = nome
         self._id_mqn = id_mqn
         self._parte_trabalhada = parte_trabalhada

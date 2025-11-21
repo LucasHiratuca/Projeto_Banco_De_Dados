@@ -9,7 +9,7 @@ cursor = conexao.cursor()
 cursor.execute(
     '''
         CREATE TABLE IF NOT EXISTS Professor(
-            CPF_Professor INTEGER NOT NULL PRIMARY KEY,
+            CPF_Professor INTEGER PRIMARY KEY,
             RG INTEGER UNIQUE,
             Nome VARCHAR NOT NULL,
             Horario TIME NOT NULL,

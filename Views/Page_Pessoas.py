@@ -19,69 +19,213 @@ def show_pessoas_page():
         if operacao == "Incluir":
             aluno = Aluno(0, 0, 0, "", "", "", 0)
         
-            aluno.cpf_aluno = st.number_input("CPF do Aluno: ")
-            aluno.rg_aluno = st.number_input("Rg do Aluno: ")
-            aluno.telefone_aluno = st.number_input("Informe seu número: ")
-            aluno.objetivo_treino = st.text_input_("Nome do Aluno: ")
-            aluno.tipo_plano = st.text_input_("Nome do Aluno: ")
+            aluno.cpf = st.number_input("CPF do Aluno: ")
+            aluno.rg_aluno = st.number_input("Rg do Aluno: ") or None
+            aluno.telefone_aluno = st.number_input("Informe seu número: ") or None
             aluno.nome_aluno = st.text_input_("Nome do Aluno: ")
-            aluno.cpf_pers = st.number_input("CPF do Personal: ")
+            aluno.objetivo_treino = st.text_input_("Objetivo de treino: ") or None
+            aluno.tipo_plano = st.text_input_("Tipo do plano: ") or None
+            aluno.cpf_pers = st.number_input("CPF do Personal: ") or None
             
         
         if st.button("Cadastrar"):
-            incluir_produto(produto)
-            st.success("Produto cadastrado com sucesso!")
+            incluirPessoa(aluno)
+            st.success("Aluno cadastrado com sucesso!")
 
-    elif operacao == "Consultar":
-        if st.button("Consultar"):
-            produtos = consultar_produtos()
-            if produtos:
-                df = pd.DataFrame(produtos, columns=["Código", "Descrição", "Quantidade", "Valor Unitário", "Valor Total"])
+        elif operacao == "Consultar":
+            if st.button("Consultar"):
+                alunos = consultarAluno()
+                if alunos:
+                    df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+                    st.dataframe(df, width=1000)
+                else:
+                    st.info("Nenhum aluno cadastrado.")
+
+        elif operacao == "Excluir":
+            alunos = consultarAluno()
+            if alunos:
+                df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
                 st.dataframe(df, width=1000)
+            
+                cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
+                if st.button("Excluir"):
+                    excluirAluno(cpf)
+                    st.success("Aluno excluído!")
+                    st.rerun()
             else:
-                st.info("Nenhum produto cadastrado.")
+                st.info("Nenhum aluno cadastrado.")
 
-    elif operacao == "Excluir":
-        produtos = consultar_produtos()
-        if produtos:
-            df = pd.DataFrame(produtos, columns=["Código", "Descrição", "Quantidade", "Valor Unitário", "Valor Total"])
-            st.dataframe(df)
+        elif operacao == "Alterar":
+            alunos = consultarAluno()
+            if alunos:
+                df = pd.DataFrame(alunos, columns=["CPF Aluno", "RG", "Número", "Nome", "Objetivo De Treino", "Tipo do Plano", "CPF do Personal"])
+                st.dataframe(df, width=1000)
             
-            codigo = st.number_input("Código do produto a excluir:", min_value=1)
-            if st.button("Excluir"):
-                excluir_produto(codigo)
-                st.success("Produto excluído!")
-                st.rerun()
-        else:
-            st.info("Nenhum produto cadastrado.")
-
-    elif operacao == "Alterar":
-        produtos = consultar_produtos()
-        if produtos:
-            df = pd.DataFrame(produtos, columns=["Código", "Descrição", "Quantidade", "Valor Unitário", "Valor Total"])
-            st.dataframe(df)
+                cpf = st.number_input("CPF do aluno a alterar:", min_value=1)
+                aluno_check = next((a for a in alunos if a[0] == cpf), None)
             
-            codigo = st.number_input("Código do produto a alterar:", min_value=1)
-            produto_data = next((p for p in produtos if p[0] == codigo), None)
-            
-            if produto_data:
-                produto = Produto(*produto_data[:4])
+                if aluno_check:
+                    aluno_att = Aluno(*aluno_check[:7])
                 
-                with st.form(key="altera_produto"):
-                    produto.set_descricao(st.text_input("Descrição:", value=produto.get_descricao()))
-                    produto.set_qtd(st.number_input("Quantidade:", min_value=0, value=produto.get_qtd()))
-                    produto.set_valor_unitario(st.number_input("Valor Unitário (R$):", 
-                                                             min_value=0.0, 
-                                                             format="%.2f", 
-                                                             value=produto.get_valor_unitario()))
+                    with st.form(key="alterarAluno"):
+                        aluno_att.rg_aluno        = st.number_input("RG do Aluno:", value=aluno_att.rg_aluno)
+                        aluno_att.telefone_aluno  = st.number_input("Informe seu número:", value=aluno_att.telefone_aluno)
+                        aluno_att.nome_aluno      = st.text_input("Nome do Aluno:", value=aluno_att.nome_aluno)
+                        aluno_att.objetivo_treino = st.text_input("Objetivo de treino:", value=aluno_att.objetivo_treino)
+                        aluno_att.tipo_plano      = st.text_input("Tipo do plano:", value=aluno_att.tipo_plano)
+                        aluno_att.cpf_pers        = st.number_input("CPF do Personal:", value=aluno_att.cpf_pers)
                     
-                    st.write(f"**Valor Total:** R$ {produto.calcular_valor_total():.2f}")
-                    
-                    if st.form_submit_button("Salvar Alterações"):
-                        alterar_produto(produto)
-                        st.success("Produto atualizado!")
-                        st.rerun()
+                        if st.form_submit_button("Salvar Alterações"):
+                            alterarAluno(aluno_att)
+                            st.success("Aluno atualizado!")
+                            st.rerun()
+                else:
+                    st.warning("Aluno não encontrado!")
             else:
-                st.warning("Produto não encontrado!")
-        else:
-            st.info("Nenhum produto cadastrado.")
+                st.info("Nenhum Aluno cadastrado.")
+    
+
+    if entidade == "Professor":
+
+        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
+
+        if operacao == "Incluir":
+            aluno = Aluno(0, 0, 0, "", "", "", 0)
+        
+            aluno.cpf = st.number_input("CPF do Aluno: ")
+            aluno.rg_aluno = st.number_input("Rg do Aluno: ") or None
+            aluno.telefone_aluno = st.number_input("Informe seu número: ") or None
+            aluno.nome_aluno = st.text_input_("Nome do Aluno: ")
+            aluno.objetivo_treino = st.text_input_("Objetivo de treino: ") or None
+            aluno.tipo_plano = st.text_input_("Tipo do plano: ") or None
+            aluno.cpf_pers = st.number_input("CPF do Personal: ") or None
+            
+        
+        if st.button("Cadastrar"):
+            incluirPessoa(aluno)
+            st.success("Aluno cadastrado com sucesso!")
+
+        elif operacao == "Consultar":
+            if st.button("Consultar"):
+                alunos = consultarAluno()
+                if alunos:
+                    df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+                    st.dataframe(df, width=1000)
+                else:
+                    st.info("Nenhum aluno cadastrado.")
+
+        elif operacao == "Excluir":
+            alunos = consultarAluno()
+            if alunos:
+                df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+                st.dataframe(df, width=1000)
+            
+                cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
+                if st.button("Excluir"):
+                    excluirAluno(cpf)
+                    st.success("Aluno excluído!")
+                    st.rerun()
+            else:
+                st.info("Nenhum aluno cadastrado.")
+
+        elif operacao == "Alterar":
+            alunos = consultarAluno()
+            if alunos:
+                df = pd.DataFrame(alunos, columns=["CPF Aluno", "RG", "Número", "Nome", "Objetivo De Treino", "Tipo do Plano", "CPF do Personal"])
+                st.dataframe(df, width=1000)
+            
+                cpf = st.number_input("CPF do aluno a alterar:", min_value=1)
+                aluno_check = next((a for a in alunos if a[0] == cpf), None)
+            
+                if aluno_check:
+                    aluno_att = Aluno(*aluno_check[:7])
+                
+                    with st.form(key="alterarAluno"):
+                        aluno_att.rg_aluno        = st.number_input("RG do Aluno:", value=aluno_att.rg_aluno)
+                        aluno_att.telefone_aluno  = st.number_input("Informe seu número:", value=aluno_att.telefone_aluno)
+                        aluno_att.nome_aluno      = st.text_input("Nome do Aluno:", value=aluno_att.nome_aluno)
+                        aluno_att.objetivo_treino = st.text_input("Objetivo de treino:", value=aluno_att.objetivo_treino)
+                        aluno_att.tipo_plano      = st.text_input("Tipo do plano:", value=aluno_att.tipo_plano)
+                        aluno_att.cpf_pers        = st.number_input("CPF do Personal:", value=aluno_att.cpf_pers)
+                    
+                        if st.form_submit_button("Salvar Alterações"):
+                            alterarAluno(aluno_att)
+                            st.success("Aluno atualizado!")
+                            st.rerun()
+                else:
+                    st.warning("Aluno não encontrado!")
+            else:
+                st.info("Nenhum Aluno cadastrado.")
+
+
+    if entidade == "Personal":
+
+        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
+
+        if operacao == "Incluir":
+            aluno = Aluno(0, 0, 0, "", "", "", 0)
+        
+            aluno.cpf = st.number_input("CPF do Aluno: ")
+            aluno.rg_aluno = st.number_input("Rg do Aluno: ") or None
+            aluno.telefone_aluno = st.number_input("Informe seu número: ") or None
+            aluno.nome_aluno = st.text_input_("Nome do Aluno: ")
+            aluno.objetivo_treino = st.text_input_("Objetivo de treino: ") or None
+            aluno.tipo_plano = st.text_input_("Tipo do plano: ") or None
+            aluno.cpf_pers = st.number_input("CPF do Personal: ") or None
+            
+        
+        if st.button("Cadastrar"):
+            incluirPessoa(aluno)
+            st.success("Aluno cadastrado com sucesso!")
+
+        elif operacao == "Consultar":
+            if st.button("Consultar"):
+                alunos = consultarAluno()
+                if alunos:
+                    df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+                    st.dataframe(df, width=1000)
+                else:
+                    st.info("Nenhum aluno cadastrado.")
+
+        elif operacao == "Excluir":
+            alunos = consultarAluno()
+            if alunos:
+                df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+                st.dataframe(df, width=1000)
+            
+                cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
+                if st.button("Excluir"):
+                    excluirAluno(cpf)
+                    st.success("Aluno excluído!")
+                    st.rerun()
+            else:
+                st.info("Nenhum aluno cadastrado.")
+
+        elif operacao == "Alterar":
+            alunos = consultarAluno()
+            if alunos:
+                df = pd.DataFrame(alunos, columns=["CPF Aluno", "RG", "Número", "Nome", "Objetivo De Treino", "Tipo do Plano", "CPF do Personal"])
+                st.dataframe(df, width=1000)
+            
+                cpf = st.number_input("CPF do aluno a alterar:", min_value=1)
+                aluno_check = next((a for a in alunos if a[0] == cpf), None)
+            
+                if aluno_check:
+                    aluno_att = Aluno(*aluno_check[:7])
+                
+                    with st.form(key="alterarAluno"):
+                        aluno_att.rg_aluno        = st.number_input("RG do Aluno:", value=aluno_att.rg_aluno)
+                        aluno_att.telefone_aluno  = st.number_input("Informe seu número:", value=aluno_att.telefone_aluno)
+                        aluno_att.nome_aluno      = st.text_input("Nome do Aluno:", value=aluno_att.nome_aluno)
+                        aluno_att.objetivo_treino = st.text_input("Objetivo de treino:", value=aluno_att.objetivo_treino)
+                        aluno_att.tipo_plano      = st.text_input("Tipo do plano:", value=aluno_att.tipo_plano)
+                        aluno_att.cpf_pers        = st.number_input("CPF do Personal:", value=aluno_att.cpf_pers)
+                    
+                        if st.form_submit_button("Salvar Alterações"):
+                            alterarAluno(aluno_att)
+                            st.success("Aluno atualizado!")
+                            st.rerun()
+                else:
+                    st.warning("Aluno não encontrado!")
+            else:
+                st.info("Nenhum Aluno cadastrado.")            

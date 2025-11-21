@@ -1,5 +1,5 @@
 class Treino:
-    def _init_(self, id, alongamentos, exercicios_arbcs, exercicios_mqn, carga_mqn, cpf_aluno):
+    def __init__(self, id, alongamentos, exercicios_arbcs, exercicios_mqn, carga_mqn, cpf_aluno):
         self._id = id 
         self._alongamentos = alongamentos
         self._exercicios_mqn = exercicios_mqn

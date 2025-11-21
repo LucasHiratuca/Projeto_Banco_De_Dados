@@ -1,8 +1,8 @@
 class Aluno:
-    def _init_(self, cpf, rg_aluno, telfone_aluno, nome_aluno, objetivo_treino, tipo_plano, cpf_pers):
+    def __init__(self, cpf, rg_aluno, telefone_aluno, nome_aluno, objetivo_treino, tipo_plano, cpf_pers):
         self._cpf = cpf
         self._rg_aluno = rg_aluno
-        self._telefone_aluno = telfone_aluno
+        self._telefone_aluno = telefone_aluno
         self._nome_aluno = nome_aluno
         self._objetivo_treino = objetivo_treino
         self._tipo_plano = tipo_plano
