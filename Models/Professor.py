@@ -21,8 +21,8 @@ class Professor:
     def get_nome_prof(self):
         return self._nome_prof
 
-    def set_nome_prof(self, nome):
-        self._nome = nome_prof
+    def set_nome_prof(self, nome_prof):
+        self._nome_prof = nome_prof
      
     def get_horario_prof(self):
         return self._horario_prof

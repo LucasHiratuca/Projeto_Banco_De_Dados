@@ -24,10 +24,10 @@ class Personal:
     def set_nome_pers(self, nome_pers):
         self._nome_pers = nome_pers
      
-    def get_time(self):
+    def get_horario_pers(self):
         return self._horario_pers
 
-    def set_time(self, horario_pers):
+    def set_horario_pers(self, horario_pers):
         self._horario_pers = horario_pers
      
     def get_telefone_pers(self):

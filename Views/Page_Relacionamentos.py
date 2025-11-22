@@ -2,29 +2,24 @@
 import streamlit as st
 import pandas as pd
 #Parte do Controller
-from Controllers.Pessoas_Controller import *
+from Controllers.Aluno_Aula_Controller import *
+from Controllers.Treino_Maquina_Controller import *
 
 
-def show_pessoas_page():
-    st.title('Cadastro de Pessoas')
+def show_relacionamentos_page():
+    st.title('Cadastro de Relacionamentos')
 
-    entidade = st.sidebar.selectbox("Entidades", ["Aluno", "Personal", "Professor"])
+    relacionamento = st.sidebar.selectbox("Relacionamentos", ["Aluno_Aula", "Treino_Maquina"])
 
-    if entidade == "Aluno":
+    if relacionamento == "Aluno_Aula":
 
         operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
 
         if operacao == "Incluir":
-            aluno = Aluno(0, 0, 0, "", "", "", 0)
+            aluno_aula = Aluno_Aula(0, 0, 0, "", "", "", 0)
         
             aluno.cpf = st.number_input("CPF do Aluno: ")
             aluno.rg_aluno = st.number_input("Rg do Aluno: ") or None
-            aluno.telefone_aluno = st.number_input("Informe seu número: ") or None
-            aluno.nome_aluno = st.text_input("Nome do Aluno: ")
-            aluno.objetivo_treino = st.text_input("Objetivo de treino: ") or None
-            aluno.tipo_plano = st.text_input("Tipo do plano: ")
-            aluno.cpf_pers = st.number_input("CPF do Personal: ") or None
-            
         
         if st.button("Cadastrar"):
             incluirPessoa(aluno)
@@ -180,85 +175,3 @@ def show_pessoas_page():
                     st.warning("Professor não encontrado!")
             else:
                 st.info("Nenhum professor cadastrado.")
-
-    if entidade == "Personal":
-
-        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
-
-        if operacao == "Incluir":
-            personal = Personal(0, 0, "", "", 0)
-        
-            personal.set_cpf = st.number_input("CPF do Personal: ")
-            personal.set_rg_pers = st.number_input("Rg do Personal: ") or None
-            personal.set_nome_pers = st.text_input("Nome do Personal: ") 
-            personal.set_horario_pers = st.text_input("Horario: ")
-            personal.set_telefone_pers = st.number_input("Telefone: ") or None
-            
-            if st.button("Cadastrar"):
-                incluirPessoa(personal)
-                st.success("Personal cadastrado com sucesso!")
-
-        elif operacao == "Consultar":
-            if st.button("Consultar"):
-                pers = consultarPersonal()
-                if pers:
-                    df = pd.DataFrame(pers, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
-                    st.dataframe(df, width=1000)
-                else:
-                    st.info("Nenhum personal cadastrado.")
-
-
-
-        elif operacao == "Excluir":
-            pers = consultarPersonal()
-            if alunos:
-                df = pd.DataFrame(pers, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
-                st.dataframe(df, width=1000)
-            
-                cpf = st.number_input("CPF do personal a excluir:", min_value=1)
-                if st.button("Excluir"):
-                    excluirPersonal(cpf)
-                    st.success("Personal excluído!")
-                    st.rerun()
-                else:
-                    st.info("Personal não encontrado.")
-            else:
-                st.info("Nenhum personal cadastrado.")
-
-
-        elif operacao == "Alterar":
-            pers = consultarPersonal()
-            if personal:
-                df = pd.DataFrame(pers, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
-                st.dataframe(df, width=1000)
-    
-                cpf = st.number_input("CPF do personal a alterar:", min_value=1, key="cpf_alterar")
-                pers_check = next((p for p in pers if p[0] == cpf), None)
-    
-                if pers_check:
-                    pers_att = Personal(*pers_check[:5])
-        
-                    with st.form(key="alterarPersonal"):
-                
-                        rg_value = pers_att.get_rg_pers or 0
-                        telefone_value = pers_att.get_telefone_pers or 0
-                
-                        novo_rg = st.number_input("RG do Personal:", value=rg_value, min_value=0)
-                        novo_nome = st.text_input("Informe seu nome:", value=pers_att.get_nome_pers or "")
-                        novo_horario = st.text_input("Horário do Personal:", value=pers_att.get_horario_pers or "")
-                        novo_telefone = st.number_input("Telefone:", value=telefone_value, min_value=0)
-                
-                        if st.form_submit_button("Salvar Alterações"):
-                    
-                            pers_att.set_rg_pers(novo_rg if novo_rg != 0 else None)
-                            pers_att.set_nome_pers(novo_nome or None)
-                            pers_att.set_horario_pers(novo_horario or None)
-                            pers_att.set_telefone_pers(novo_telefone if novo_telefone != 0 else None)
-                    
-                            alterarPersonal(pers_att)
-                            st.success("Personal atualizado!")
-                            st.rerun()
-                else:
-                    st.warning("Personal não encontrado!")
-            else:
-                st.info("Nenhum personal cadastrado.")       
