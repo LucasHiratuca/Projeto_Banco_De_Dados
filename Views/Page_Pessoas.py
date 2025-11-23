@@ -150,7 +150,7 @@ def show_pessoas_page():
                 df = pd.DataFrame(profs, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
                 st.dataframe(df, width=1000)
     
-                cpf = st.number_input("CPF do professor a alterar:", min_value=1, key="cpf_alterar")
+                cpf = st.number_input("CPF do professor a alterar:", min_value=1, key="cpf_personal_alterar")
                 prof_check = next((p for p in profs if p[0] == cpf), None)
     
                 if prof_check:
@@ -232,7 +232,7 @@ def show_pessoas_page():
                 df = pd.DataFrame(pers, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
                 st.dataframe(df, width=1000)
     
-                cpf = st.number_input("CPF do personal a alterar:", min_value=1, key="cpf_alterar")
+                cpf = st.number_input("CPF do personal a alterar:", min_value=1, key="cpf_personal_alterar")
                 pers_check = next((p for p in pers if p[0] == cpf), None)
     
                 if pers_check:

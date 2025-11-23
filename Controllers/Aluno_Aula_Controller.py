@@ -80,21 +80,21 @@ def excluirAlunoAulaEsp(ID_Aula, CPF_Aluno):
         if conexao:
             conexao.close()
 
-def alterarTreinoMaquina(Treino_Maquina):
+def alterarAlunoAula(Aluno_Aula):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
         cursor.execute('''
-            UPDATE Treino_Maquina
-            SET ID_Treino = ?, Nome_Maquina = ?
-            WHERE ID_Treino = ?
+            UPDATE Aluno_Aula
+            SET ID_Aula = ?, CPF_Aluno = ?
+            WHERE CPF_Aluno = ? 
         ''', (
-            Treino_Maquina["ID_Treino"],
-            Treino_Maquina["Nome-Maquina"],
-            Treino_Maquina("ID_Treino")
+            Aluno_Aula["ID_Aula"],
+            Aluno_Aula["CPF_Aluno"],
+            Aluno_Aula("CPF_Aluno")
         ))
         conexao.commit()
-        print(f"Relacionamento com {Treino_Maquina['ID_Treino']} alterado com sucesso!")
+        print(f"Relacionamento com {Aluno_Aula['CPF_Aluno']} alterado com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao alterar relacionamento: {e}")
     finally:

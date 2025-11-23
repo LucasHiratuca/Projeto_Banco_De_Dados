@@ -13,165 +13,181 @@ def show_relacionamentos_page():
 
     if relacionamento == "Aluno_Aula":
 
-        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
+        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Excluir Específico", "Alterar"])
 
         if operacao == "Incluir":
-            aluno_aula = Aluno_Aula(0, 0, 0, "", "", "", 0)
+            aluno_aula = Aluno_Aula(0, 0)
         
-            aluno.cpf = st.number_input("CPF do Aluno: ")
-            aluno.rg_aluno = st.number_input("Rg do Aluno: ") or None
+            aluno_aula.cpf_aluno = st.number_input("CPF do Aluno: ")
+            aluno_aula.id_aula = st.number_input("ID da Aula: ") 
         
         if st.button("Cadastrar"):
-            incluirPessoa(aluno)
-            st.success("Aluno cadastrado com sucesso!")
+            incluirAlunoAula(aluno_aula)
+            st.success("Aluno cadastrado na aula com sucesso!")
 
         elif operacao == "Consultar":
             if st.button("Consultar"):
-                alunos = consultarAluno()
-                if alunos:
-                    df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+                aluno_aula = consultarAlunoAula()
+                if aluno_aula:
+                    df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
                     st.dataframe(df, width=1000)
                 else:
-                    st.info("Nenhum aluno cadastrado.")
+                    st.info("Nenhum resultado encontrado. ")
 
         elif operacao == "Excluir":
-            alunos = consultarAluno()
-            if alunos:
-                df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+            aluno_aula = consultarAlunoAula()
+            if aluno_aula:
+                df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
                 st.dataframe(df, width=1000)
             
                 cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
                 if st.button("Excluir"):
-                    excluirAluno(cpf)
-                    st.success("Aluno excluído!")
+                    excluirAlunoAula(cpf)
+                    st.success("Relacionamento excluído!")
                     st.rerun()
                 else:
-                    st.info("Não foi possível achar o aluno")
+                    st.info("Não foi possível achar o relacionamento")
             else:
-                st.info("Nenhum aluno cadastrado.")
+                st.info("Nenhum relacionamento cadastrado.")
+
+
+        elif operacao == "Excluir Específico":
+            aluno_aula = consultarAlunoAula()
+            if aluno_aula:
+                df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
+                st.dataframe(df, width=1000)
+            
+                cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
+                id = st.number_input("Id da aula a excluir:", min_value = 1)
+                if st.button("Excluir"):
+                    excluirAlunoAulaEsp(id, cpf)
+                    st.success("Relacionamento excluído!")
+                    st.rerun()
+                else:
+                    st.info("Não foi possível achar o relacionamento")
+            else:
+                st.info("Nenhum relacionamento cadastrado.")        
 
         elif operacao == "Alterar":
-            alunos = consultarAluno()
-            if alunos:
-                df = pd.DataFrame(alunos, columns=["CPF Aluno", "RG", "Número", "Nome", "Objetivo De Treino", "Tipo do Plano", "CPF do Personal"])
+            aluno_aula = consultarAlunoAula()
+            if aluno_aula:
+                df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
                 st.dataframe(df, width=1000)
     
-                cpf = st.number_input("CPF do aluno a alterar:", min_value=1, key="cpf_aluno_alterar")
-                aluno_check = next((a for a in alunos if a[0] == cpf), None)
+                cpf = st.number_input("CPF do aluno com relacionamento a alterar:", min_value=1, key="cpf_aluno_alterar")
+                aluno_check = next((a for a in aluno_aula if a[1] == cpf), None)
     
                 if aluno_check:
-                    aluno_att = Aluno(*aluno_check[:7])
+                    aluno_aula_att = Aluno_Aula(*aluno_check[:2])
         
                     with st.form(key="alterarAluno"):
-               
-                        rg_value = aluno_att.rg_aluno or 0
-                        telefone_value = aluno_att.telefone_aluno or 0
-                        cpf_personal_value = aluno_att.cpf_pers or 0
-                        objetivo_value = aluno_att.objetivo_treino or 0
+                                    
                 
-                        novo_rg = st.number_input("RG do Aluno:", value=rg_value, min_value=0)
-                        novo_telefone = st.number_input("Informe seu número:", value=telefone_value, min_value=0)
-                        novo_nome = st.text_input("Nome do Aluno:", value=aluno_att.nome_aluno or "")
-                        novo_objetivo = st.text_input("Objetivo de treino:", value=objetivo_value or "")
-                        novo_plano = st.text_input("Tipo do plano:", value=aluno_att.tipo_plano or "")
-                        novo_cpf_personal = st.number_input("CPF do Personal:", value=cpf_personal_value, min_value=0)
-            
+                        novo_id = st.number_input("Id da aula:", value=aluno_aula_att.id_aula, min_value=0)
+                        novo_cpf = st.number_input("Informe o cpf:", value=aluno_aula_att.cpf_aluno, min_value=0)
+                        
                         if st.form_submit_button("Salvar Alterações"):
                     
-                            aluno_att.rg_aluno(novo_rg if novo_rg != 0 else None)
-                            aluno_att.telefone_aluno(novo_telefone if novo_telefone != 0 else None)
-                            aluno_att.nome_aluno(novo_nome or None)
-                            aluno_att.objetivo_treino(novo_objetivo or None)
-                            aluno_att.tipo_plano(novo_plano or None)
-                            aluno_att.cpf_pers(novo_cpf_personal if novo_cpf_personal != 0 else None)
+                            aluno_aula_att.id_aula(novo_id if novo_id != 0 else None)
+                            aluno_aula_att.cpf_aluno(novo_cpf if novo_cpf != 0 else None)
+                            
                     
-                            alterarAluno(aluno_att)
-                            st.success("Aluno atualizado!")
+                            alterarAlunoAula(aluno_aula_att)
+                            st.success("Relacionamento atualizado!")
                             st.rerun()
                 else:
-                    st.warning("Aluno não encontrado!")
+                    st.warning("Relacionamento não encontrado!")
             else:
-                st.info("Nenhum Aluno cadastrado.")
+                st.info("Nenhum relacionamento cadastrado.")
     
 
-    if entidade == "Professor":
+    if relacionamento == "Treino_Maquina":
 
-        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
+        operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Excluir Específico", "Alterar"])
 
         if operacao == "Incluir":
-            professor = Professor(0, 0, "", "", 0)
+            treino_maquina = Treino_Maquina(0, "")
         
-            professor.get_cpf = st.number_input("CPF do Professor: ")
-            professor.get_rg_prof = st.number_input("Rg do Professor: ") or None
-            professor.get_nome_prof = st.text_input("Nome do Professor: ")
-            professor.get_horario_prof = st.text_input("Horários: ") 
-            professor.get_telefone_prof = st.number_input("Telefone: ") or None
-            
+            treino_maquina.id_tr = st.number_input("ID do Treino: ")
+            treino_maquina.nome_mqn = st.text_input("Nome da Máquina: ") 
         
         if st.button("Cadastrar"):
-            incluirPessoa(professor)
-            st.success("Professor cadastrado com sucesso!")
+            incluirTreinoMaquina(treino_maquina)
+            st.success("Relacionamento cadastrado com sucesso!")
 
 
         elif operacao == "Consultar":
             if st.button("Consultar"):
-                profs = consultarProfessor()
-                if profs:
-                    df = pd.DataFrame(profs, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
+                treino_maquina = consultarTreinoMaquina()
+                if treino_maquina:
+                    df = pd.DataFrame(treino_maquina, columns=["ID do Treino", "Nome da Maquina"])
                     st.dataframe(df, width=1000)
                 else:
-                    st.info("Nenhum professor cadastrado.")
+                    st.info("Nenhum resultado encontrado. ")
 
         elif operacao == "Excluir":
-            profs = consultarProfessor()
-            if profs:
-                df = pd.DataFrame(profs, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
+            treino_maquina = consultarTreinoMaquina()
+            if treino_maquina:
+                df = pd.DataFrame(treino_maquina, columns=["ID do Treino", "Nome da Maquina"])
                 st.dataframe(df, width=1000)
             
-                cpf = st.number_input("CPF do professor a excluir:", min_value=1)
-                if st.button("Excluir"):
-                    excluirProfessor(cpf)
-                    st.success("Professor excluído!")
-                    st.rerun()
-                else: 
-                    st.info("Não foi possível achar o professor")
-            else:
-                st.info("Nenhum professor cadastrado.")
+                id = st.number_input("ID do treino a excluir:", min_value=1)
 
+                if st.button("Excluir"):
+                    excluirTreinoMaquina(id)
+                    st.success("Relacionamento excluído!")
+                    st.rerun()
+                else:
+                    st.info("Não foi possível achar o relacionamento")
+            else:
+                st.info("Nenhum relacionamento cadastrado.")
+
+
+        elif operacao == "Excluir Específico":
+            treino_maquina = consultarTreinoMaquina()
+            if treino_maquina:
+                df = pd.DataFrame(treino_maquina, columns=["ID do Treino", "Nome da Maquina"])
+                st.dataframe(df, width=1000)
+            
+                maquina = st.text_input("Nome da Maquina a excluir:", min_value=1)
+                id = st.number_input("Id da aula a excluir:", min_value = 1)
+                if st.button("Excluir"):
+                    excluirTreinoMaquinaEsp(id, maquina)
+                    st.success("Relacionamento excluído!")
+                    st.rerun()
+                else:
+                    st.info("Não foi possível achar o relacionamento")
+            else:
+                st.info("Nenhum relacionamento cadastrado.")        
 
         elif operacao == "Alterar":
-            profs = consultarProfessor()
-            if profs:
-                df = pd.DataFrame(profs, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
+            treino_maquina = consultarTreinoMaquina()
+            if treino_maquina:
+                df = pd.DataFrame(treino_maquina, columns=["ID do Treino", "Nome da Maquina"])
                 st.dataframe(df, width=1000)
     
-                cpf = st.number_input("CPF do professor a alterar:", min_value=1, key="cpf_alterar")
-                prof_check = next((p for p in profs if p[0] == cpf), None)
+                id = st.number_input("ID do treino com relacionamento a alterar:", min_value=1, key="id_maquina_alterar")
+                treino_maquina_check = next((t for t in treino_maquina if t[0] == id), None)
     
-                if prof_check:
-                    prof_att = Professor(*prof_check[:5])
+                if treino_maquina_check:
+                    treino_maquina_att = Treino_Maquina(*treino_maquina_check[:2])
         
-                    with st.form(key="alterarProfessor"):
+                    with st.form(key="alterarTreinoMaquina"):
+                                    
                 
-                        rg_value = prof_att.get_rg_prof or 0
-                        telefone_value = prof_att.get_telefone_prof or 0
-                
-                        novo_rg = st.number_input("RG do Professor:", value=rg_value, min_value=0)
-                        novo_nome = st.text_input("Informe seu nome:", value=prof_att.get_nome_prof or "")
-                        novo_horario = st.text_input("Horário do Professor:", value=prof_att.get_horario_prof or "")
-                        novo_telefone = st.number_input("Telefone:", value=telefone_value, min_value=0)
-                
-                    if st.form_submit_button("Salvar Alterações"):
+                        novo_id = st.number_input("Id do treino", value=treino_maquina_att.id_tr, min_value=0)
+                        nova_maquina = st.text_input("Informe o nome da maquina:", value=treino_maquina_att.nome_mqn, min_value=0)
+                        
+                        if st.form_submit_button("Salvar Alterações"):
                     
-                        prof_att.set_rg_prof(novo_rg if novo_rg != 0 else None)
-                        prof_att.set_nome_prof(novo_nome or None)
-                        prof_att.set_horario_prof(novo_horario or None)
-                        prof_att.set_telefone_prof(novo_telefone if novo_telefone != 0 else None)
+                            treino_maquina_att.id_tr(novo_id if novo_id != 0 else None)
+                            treino_maquina_att.nome_mqn(nova_maquina if novo_cpf != 0 else None)
+                            
                     
-                        alterarProfessor(prof_att)
-                        st.success("Professor atualizado!")
-                        st.rerun()
+                            alterarTreinoMaquina(treino_maquina_att)
+                            st.success("Relacionamento atualizado!")
+                            st.rerun()
                 else:
-                    st.warning("Professor não encontrado!")
+                    st.warning("Relacionamento não encontrado!")
             else:
-                st.info("Nenhum professor cadastrado.")
+                st.info("Nenhum relacionamento cadastrado.")
