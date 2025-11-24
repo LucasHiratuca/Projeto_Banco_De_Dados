@@ -58,9 +58,9 @@ def excluirPlano(Tipo_Plano):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Plano WHERE Tipo_Plano = ?", Tipo_Plano,)
+        cursor.execute("DELETE FROM Plano WHERE Tipo_Plano = ?", Tipo_Plano)
         conexao.commit()
-        print(f"Relacionamento com {Tipo_Plano,} excluído com sucesso!")
+        print(f"Relacionamento com {Tipo_Plano} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir plano: {e}")
     finally:

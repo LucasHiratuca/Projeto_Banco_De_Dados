@@ -139,8 +139,6 @@ def consultarPersonal():
         for row in rows:
 
             CPF_Personal, RG, Nome, Horario, Telefone = row
-            
-        # Adiciona os dados do funcionário à lista
             dados.append({
                 "CPF Personal: ": CPF_Personal,
                 "RG: ": RG,
@@ -162,9 +160,9 @@ def excluirAluno(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf,))
+        cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf))
         conexao.commit()
-        print(f"Aluno com codigo {cpf,} excluído com sucesso!")
+        print(f"Aluno com codigo {cpf} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir o aluno: {e}")
     finally:
@@ -175,9 +173,9 @@ def excluirProfessor(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf,))
+        cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf))
         conexao.commit()
-        print(f"Professor com codigo {cpf,} excluído com sucesso!")
+        print(f"Professor com codigo {cpf} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir o professor: {e}")
     finally:
@@ -188,9 +186,9 @@ def excluirPersonal(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf,))
+        cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf))
         conexao.commit()
-        print(f"Personal com codigo {cpf,} excluído com sucesso!")
+        print(f"Personal com codigo {cpf} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir o personal: {e}")
     finally:

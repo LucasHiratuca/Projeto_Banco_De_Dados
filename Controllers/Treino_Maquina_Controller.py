@@ -58,9 +58,9 @@ def excluirTreinoMaquina(ID_Treino):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Treino_Maquina WHERE ID_Treino = ?", (ID_Treino,))
+        cursor.execute("DELETE FROM Treino_Maquina WHERE ID_Treino = ?", (ID_Treino))
         conexao.commit()
-        print(f"Relacionamento com {ID_Treino,} excluído com sucesso!")
+        print(f"Relacionamento com {ID_Treino} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir relacionamento: {e}")
     finally:
@@ -73,7 +73,7 @@ def excluirTreinoMaquinaEsp(ID_Treino, ID_Maquina):
         cursor = conexao.cursor()
         cursor.execute("DELETE FROM Aluno_Aula WHERE ID_Treino = ? AND ID_Maquina = ?", ID_Treino, ID_Maquina)
         conexao.commit()
-        print(f"Relacionamento com {ID_Treino,} e {ID_Maquina,} excluído com sucesso!")
+        print(f"Relacionamento com {ID_Treino} e {ID_Maquina} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir relacionamento: {e}")
     finally:
