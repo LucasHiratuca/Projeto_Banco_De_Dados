@@ -1,9 +1,16 @@
 class Produto:
-    def __init__(self,tipo_pr ,nome_pr ,cpf_aluno):
+    def __init__(self,tipo_pr ,nome_pr ,cpf_aluno, id_pr):
+        self._id_pr = id_pr
         self._tipo_pr = tipo_pr
         self._nome_pr_ = nome_pr
         self._cpf_aluno = cpf_aluno
+     
+    def get_id_pr(self):
+        return self._id_pr
 
+    def set_id_pr(self, id_pr):
+        self._id_pr = id_pr   
+    
     def get_tipo_pr(self):
         return self._tipo_pr
 
