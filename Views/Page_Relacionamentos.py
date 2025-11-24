@@ -18,8 +18,8 @@ def show_relacionamentos_page():
         if operacao == "Incluir":
             aluno_aula = Aluno_Aula(0, 0)
         
-            aluno_aula.cpf_aluno = st.number_input("CPF do Aluno: ")
             aluno_aula.id_aula = st.number_input("ID da Aula: ") 
+            aluno_aula.cpf_aluno = st.number_input("CPF do Aluno: ")
         
         if st.button("Cadastrar"):
             incluirAlunoAula(aluno_aula)
@@ -29,7 +29,7 @@ def show_relacionamentos_page():
             if st.button("Consultar"):
                 aluno_aula = consultarAlunoAula()
                 if aluno_aula:
-                    df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
+                    df = pd.DataFrame(aluno_aula, columns=["ID da Aula", "CPF"])
                     st.dataframe(df, width=1000)
                 else:
                     st.info("Nenhum resultado encontrado. ")
@@ -37,12 +37,12 @@ def show_relacionamentos_page():
         elif operacao == "Excluir":
             aluno_aula = consultarAlunoAula()
             if aluno_aula:
-                df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
+                df = pd.DataFrame(aluno_aula, columns=["ID da Aula", "CPF"])
                 st.dataframe(df, width=1000)
             
-                cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
+                id = st.number_input("Digite ID da aula a excluir:", min_value=1)
                 if st.button("Excluir"):
-                    excluirAlunoAula(cpf)
+                    excluirAlunoAula(id)
                     st.success("Relacionamento excluído!")
                     st.rerun()
                 else:
@@ -54,7 +54,7 @@ def show_relacionamentos_page():
         elif operacao == "Excluir Específico":
             aluno_aula = consultarAlunoAula()
             if aluno_aula:
-                df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
+                df = pd.DataFrame(aluno_aula, columns=["ID da AUla", "CPF"])
                 st.dataframe(df, width=1000)
             
                 cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
@@ -71,11 +71,11 @@ def show_relacionamentos_page():
         elif operacao == "Alterar":
             aluno_aula = consultarAlunoAula()
             if aluno_aula:
-                df = pd.DataFrame(aluno_aula, columns=["CPF", "ID da Aula"])
+                df = pd.DataFrame(aluno_aula, columns=["ID da AUla", "CPF"])
                 st.dataframe(df, width=1000)
     
-                cpf = st.number_input("CPF do aluno com relacionamento a alterar:", min_value=1, key="cpf_aluno_alterar")
-                aluno_check = next((a for a in aluno_aula if a[1] == cpf), None)
+                id = st.number_input("ID da aula com relacionamento a alterar:", min_value=1, key="cpf_aluno_alterar")
+                aluno_check = next((a for a in aluno_aula if a[0] == id), None)
     
                 if aluno_check:
                     aluno_aula_att = Aluno_Aula(*aluno_check[:2])
@@ -176,7 +176,7 @@ def show_relacionamentos_page():
                                     
                 
                         novo_id = st.number_input("Id do treino", value=treino_maquina_att.id_tr, min_value=0)
-                        nova_maquina = st.text_input("Informe o nome da maquina:", value=treino_maquina_att.nome_mqn, min_value=0)
+                        nova_maquina = st.text_input("Informe o nome da maquina:", value=treino_maquina_att.nome_mqn or "")
                         
                         if st.form_submit_button("Salvar Alterações"):
                     
