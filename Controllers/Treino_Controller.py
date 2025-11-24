@@ -1,34 +1,38 @@
 import sqlite3
-from Models.Aluno_Aula import Aluno_Aula
+from Models.Treino import Treino
 
 def conectaBD():
     conexao = sqlite3.connect("Academia.db")
     return conexao
 
-def incluirAlunoAula():
+def incluirTreino():
     conexao = conectaBD()
     cursor = conexao.cursor()
     try:
         cursor.execute("""
-            INSERT INTO Aluno_Aula (ID_Aula, CPF_Aluno)
+            INSERT INTO Treino ( ID_Treino,  Alongamentos,   Exercicios_Aerobicos, Exercicios_Maquina ,Carga , CPF_Aluno)
             VALUES (?, ?)
             """, (
-                Aluno_Aula.id_aula(),
-                Aluno_Aula.cpf_aluno()
+               Treino.id 
+               Treino.alongamentos
+               Treino.exercicios_mqn 
+               Treino.exercicios_arbcs
+               Treino.carga_mqn 
+               Treino.cpf_aluno 
             )) 
         conexao.commit()
-        print("Dados inseridos com sucesso!")
+        print("Treino inserido com sucesso!")
     except sqlite3.Error as e:
-        print(f"Erro ao inserir dados: {e}")
+        print(f"Erro ao inserir treino: {e}")
     finally:
         conexao.close()
 
-def consultarAlunoAula():
+def consultarTreino():
     conexao = conectaBD()
     cursor = conexao.cursor()
     
     try:
-        cursor.execute('SELECT * FROM Aluno_Aula')
+        cursor.execute('SELECT * FROM Treino)
         rows = cursor.fetchall()
         
         # Lista para armazenar os dados do relacionamento
@@ -39,7 +43,7 @@ def consultarAlunoAula():
             
             # Adiciona os dados à lista
             dados.append({
-                "ID da Aula": ID_Aula,
+                "ID do Treino": ID_Treino,
                 "CPF do Aluno": CPF_Aluno
             })
         
@@ -53,11 +57,11 @@ def consultarAlunoAula():
         conexao.close()
     
 
-def excluirAlunoAula(CPF_Aluno):
+def excluirTreino(CPF_Aluno):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Aluno_Aula WHERE ID_Treino = ?", CPF_Aluno,)
+        cursor.execute("DELETE FROM Treino WHERE ID_Treino = ?", CPF_Aluno,)
         conexao.commit()
         print(f"Relacionamento com {CPF_Aluno,} excluído com sucesso!")
     except sqlite3.Error as e:
@@ -66,34 +70,34 @@ def excluirAlunoAula(CPF_Aluno):
         if conexao:
             conexao.close()
 
-def excluirAlunoAulaEsp(ID_Aula, CPF_Aluno):
+def excluirTreinoEsp(ID_Treino, CPF_Aluno):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Aluno_Aula WHERE ID_Aula = ? AND CPF_Aluno = ?", ID_Aula, CPF_Aluno)
+        cursor.execute("DELETE FROM Treino WHERE ID_Treino = ? AND CPF_Aluno = ?", ID_Treino, CPF_Aluno)
         conexao.commit()
-        print(f"Relacionamento com {CPF_Aluno,} e {ID_Aula} excluído com sucesso!")
+        print(f"Relacionamento com {CPF_Aluno,} e {ID_Treino} excluído com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao excluir relacionamento: {e}")
     finally:
         if conexao:
             conexao.close()
 
-def alterarAlunoAula(Aluno_Aula):
+def alterarTreino(Treino):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
         cursor.execute('''
-            UPDATE Aluno_Aula
-            SET ID_Aula = ?, CPF_Aluno = ?
+            UPDATE Treino
+            SET ID_Treino = ?, CPF_Aluno = ?
             WHERE CPF_Aluno = ? 
         ''', (
-            Maquina["ID_Aula"],
-            Maquina["CPF_Aluno"],
-            Maquina["CPF_Aluno"]
+            Treino["ID_Treino"],
+            Treino["CPF_Aluno"],
+            Treino("CPF_Aluno")
         ))
         conexao.commit()
-        print(f"Relacionamento com {Aluno_Aula['CPF_Aluno']} alterado com sucesso!")
+        print(f"Relacionamento com {Treino['CPF_Aluno']} alterado com sucesso!")
     except sqlite3.Error as e:
         print(f"Erro ao alterar relacionamento: {e}")
     finally:

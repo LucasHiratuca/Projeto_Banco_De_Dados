@@ -1,8 +1,8 @@
 class Alula:
-    def __init__(self, id_aula, tipo_aula, id_professor):
+    def __init__(self, id_aula, tipo_aula, cpf_professor):
         self._id_aula = id_aula
         self._tipo_aula = tipo_aula
-        self._id_professor = id_professor
+        self._cpf_professor = cpf_professor
 
     @property
     def id_aula(self):
@@ -21,10 +21,10 @@ class Alula:
         self._tipo_aula = value
 
     @property
-    def id_professor(self):
-        return self._id_professor
+    def cpf_professor(self):
+        return self._cpf_professor
 
-    @id_professor.setter
-    def id_professor(self, value):
-        self._id_professor = value
+    @cpf_professor.setter
+    def cpf_professor(self, value):
+        self._cpf_professor = value
 
