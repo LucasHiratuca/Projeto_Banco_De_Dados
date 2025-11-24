@@ -1,3 +1,5 @@
+# COntrollers/Aluno_Aula_Controller.py
+
 import sqlite3
 from Models.Aluno_Aula import Aluno_Aula
 
@@ -88,9 +90,8 @@ def alterarAlunoAula(Aluno_Aula):
             SET ID_Aula = ?, CPF_Aluno = ?
             WHERE CPF_Aluno = ? 
         ''', (
-            Maquina["ID_Aula"],
-            Maquina["CPF_Aluno"],
-            Maquina["CPF_Aluno"]
+            Aluno-Aula["ID_Aula"],
+            Aluno_Aula["CPF_Aluno"]
         ))
         conexao.commit()
         print(f"Relacionamento com {Aluno_Aula['CPF_Aluno']} alterado com sucesso!")
