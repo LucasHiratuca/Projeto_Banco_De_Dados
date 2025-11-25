@@ -8,60 +8,59 @@ class Aluno:
         self._tipo_plano = tipo_plano
         self._cpf_pers = cpf_pers
 
-    @property
-    def cpf(self):
+    
+    def get_cpf(self):
         return self._cpf
 
-    @cpf.setter
-    def cpf(self, value):
+    
+    def set_cpf(self, value):
         self._cpf = value
 
-    @property
-    def rg_aluno(self):
+    
+    def get_rg_aluno(self):
         return self._rg_aluno
 
-    @rg_aluno.setter
-    def rg_aluno(self, value):
+    def set_rg_aluno(self, value):
         self._rg_aluno = value
 
-    @property
-    def telefone_aluno(self):
+   
+    def get_telefone_aluno(self):
         return self._telefone_aluno
 
-    @telefone_aluno.setter
-    def telefone_aluno(self, value):
+    
+    def set_telefone_aluno(self, value):
         self._telefone_aluno = value
 
-    @property
-    def nome_aluno(self):
+    
+    def get_nome_aluno(self):
         return self._nome_aluno
 
-    @nome_aluno.setter
-    def nome_aluno(self, value):
+  
+    def set_nome_aluno(self, value):
         self._nome_aluno = value
 
-    @property
-    def objetivo_treino(self):
+    
+    def get_objetivo_treino(self):
         return self._objetivo_treino
 
-    @objetivo_treino.setter
-    def objetivo_treino(self, value):
+    
+    def set_objetivo_treino(self, value):
         self._objetivo_treino = value
 
-    @property
-    def tipo_plano(self):
+
+    def get_tipo_plano(self):
         return self._tipo_plano
 
-    @tipo_plano.setter
-    def tipo_plano(self, value):
+   
+    def set_tipo_plano(self, value):
         self._tipo_plano = value
 
-    @property
-    def cpf_pers(self):
+    
+    def get_cpf_pers(self):
         return self._cpf_pers
 
-    @cpf_pers.setter
-    def cpf_pers(self, value):
+    
+    def set_cpf_pers(self, value):
         self._cpf_pers = value
     pass
 

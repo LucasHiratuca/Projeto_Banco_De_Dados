@@ -31,14 +31,14 @@ def consultarProduto():
     cursor = conexao.cursor()
     
     try:
-        cursor.execute('SELECT * FROM Produto)
+        cursor.execute('SELECT * FROM Produto')
         rows = cursor.fetchall()
         
         # Lista para armazenar os dados do relacionamento
         dados = []
         
         for row in rows:
-            ID_Aula, CPF_Aluno = row
+            ID_Produto, CPF_Aluno = row
             
             # Adiciona os dados à lista
             dados.append({

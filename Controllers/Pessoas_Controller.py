@@ -17,16 +17,16 @@ def incluirPessoa(pessoa):
     try:
         if isinstance(pessoa, Aluno):
             cursor.execute("""
-                INSERT INTO Aluno (CPF_Aluno, RG_Aluno, Telefone, Nome, Objetivo_Treino, Tipo_Plano, CPF_Personal)
+                INSERT INTO Aluno (CPF_Aluno, RG, Telefone, Nome, Objetivo_Treino, Tipo_Plano, CPF_Personal)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
-                pessoa.cpf(),
-                pessoa.rg_aluno(),
-                pessoa.telefone_aluno(),
-                pessoa.nome_aluno(),
-                pessoa.objetivo_treino(),
-                pessoa.tipo_plano(),
-                pessoa.cpf_pers(),
+                pessoa.get_cpf(),
+                pessoa.get_rg_aluno(),
+                pessoa.get_telefone_aluno(),
+                pessoa.get_nome_aluno(),
+                pessoa.get_objetivo_treino(),
+                pessoa.get_tipo_plano(),
+                pessoa.get_cpf_pers(),
             )) 
         elif isinstance(pessoa, Professor):
             cursor.execute("""
@@ -67,31 +67,35 @@ def consultarAluno():
     try:
         cursor.execute('SELECT * FROM Aluno')
         rows = cursor.fetchall()
-          # Lista para armazenar os dados dos Alunos
         dados = []
-        
         for row in rows:
-            CPF_Aluno, RG, Nome, Telefone, Objetivo_Treino, Tipo_Plano, CPF_Personal = row
             
-            # Adiciona os dados do funcionário à lista
+            CPF_Aluno = row[0]        # CPF_Aluno
+            RG = row[1]               # RG
+            Telefone = row[2]         # Telefone
+            Nome = row[3]             # Nome
+            Objetivo_Treino = row[4]  # Objetivo_Treino
+            Tipo_Plano = row[5]       # Tipo_Plano
+            CPF_Personal = row[6]     # CPF_Personal
+            
             dados.append({
-                "CPF_Aluno: ": CPF_Aluno,
-                "RG: ": RG,
-                "Nome: ": Nome,
-                "Telefone: ": Telefone,
-                "Objetivo de Treino: ": Objetivo_Treino,
-                "Tipo de Plano: ": Tipo_Plano,
+                "CPF": CPF_Aluno,
+                "RG": RG,
+                "Número": Telefone,
+                "Nome": Nome,
+                "Objetivo de treino": Objetivo_Treino,
+                "Tipo do Plano": Tipo_Plano,
                 "CPF do Personal": CPF_Personal
-             })
+            })
         
         return dados
-    
-    except sqlite3.Error as e:
-        print(f"Erro ao consultar os alunos: {e}")
+    except Exception as e:
+        print(f"Erro na consulta: {e}")
         return []
     finally:
+        cursor.close()
         conexao.close()
-
+    
 
 def consultarProfessor():
     conexao = conectaBD()
@@ -160,11 +164,24 @@ def excluirAluno(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf))
+        
+        # CORRETO ✓ - Adicione a vírgula para criar uma tupla
+        cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf,))
+        
+        # Verifica se realmente excluiu algum registro
+        linhas_afetadas = cursor.rowcount
         conexao.commit()
-        print(f"Aluno com codigo {cpf} excluído com sucesso!")
+        
+        if linhas_afetadas > 0:
+            print(f"Aluno com CPF {cpf} excluído com sucesso!")
+            return True
+        else:
+            print(f"Nenhum aluno encontrado com CPF {cpf}")
+            return False
+            
     except sqlite3.Error as e:
         print(f"Erro ao excluir o aluno: {e}")
+        return False
     finally:
         if conexao:
             conexao.close()
@@ -173,7 +190,7 @@ def excluirProfessor(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf))
+        cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf,))
         conexao.commit()
         print(f"Professor com codigo {cpf} excluído com sucesso!")
     except sqlite3.Error as e:
@@ -186,7 +203,7 @@ def excluirPersonal(cpf):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf))
+        cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf,))
         conexao.commit()
         print(f"Personal com codigo {cpf} excluído com sucesso!")
     except sqlite3.Error as e:
@@ -204,18 +221,20 @@ def alterarAluno(aluno):
             SET RG = ?, Telefone = ?, Nome = ?, Objetivo_Treino = ?, Tipo_Plano = ?, CPF_Personal = ?
             WHERE CPF_Aluno = ?
         ''', (
-            aluno["RG"],
-            aluno["Telefone"],
-            aluno["Nome"],
-            aluno["Objetivo_Treino"],
-            aluno["Tipo_Plano"],
-            aluno["CPF_Personal"],
-            aluno["CPF_Aluno"]
+            aluno.get_rg_aluno(),           # RG
+            aluno.get_telefone_aluno(),     # Telefone
+            aluno.get_nome_aluno(),         # Nome
+            aluno.get_objetivo_treino(),    # Objetivo_Treino
+            aluno.get_tipo_plano(),         # Tipo_Plano
+            aluno.get_cpf_pers(),           # CPF_Personal
+            aluno.get_cpf()                 # CPF_Aluno (WHERE)
         ))
         conexao.commit()
-        print(f"Aluno com CPF {aluno['CPF_Aluno']} alterado com sucesso!")
+        print(f"Aluno com CPF {aluno.get_cpf()} alterado com sucesso!")
+        return True
     except sqlite3.Error as e:
         print(f"Erro ao alterar Aluno: {e}")
+        return False
     finally:
         if conexao:
             conexao.close()

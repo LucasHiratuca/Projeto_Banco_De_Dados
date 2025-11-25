@@ -5,13 +5,13 @@ from pathlib import Path
 import importlib
 
 # 1. Configuração ABSOLUTA PRIMEIRO
-st.set_page_config(page_title="Sistema de Cadastro", layout="wide", initial_sidebar_state="auto")
+st.set_page_config(page_title="Sistema de Academia", layout="wide", initial_sidebar_state="auto")
 
 # 2. Configuração de imports DEPOIS da configuração
 sys.path.append(str(Path(__file__).parent))
 
 # 3. Dicionário de páginas disponíveis
-PAGES = { "Funcionário": "Views.PageFuncionario", "Produto": "Views.PageProduto", "Vendas": "Views.PageVenda"}
+PAGES = { "Pessoas": "Views.Page_Pessoas", "Recursos": "Views.Page_Recursos", "Itens": "Views.Page_Itens", "Relacionamentos": "Views.Page_Relacionamentos"}
 
 # 4. Função para carregar páginas de forma dinâmica
 def load_page(page_name):
@@ -28,7 +28,7 @@ def load_page(page_name):
 #ghsghashgashgashgsahg
 # 5. Função principal
 def main():
-    st.title('Sistema de Cadastro de Vendsasaassasasasas')
+    st.title('Sistema de Cadastro da Academia')
     
     with st.sidebar:
         st.title("Menu")

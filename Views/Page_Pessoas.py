@@ -11,88 +11,139 @@ def show_pessoas_page():
     entidade = st.sidebar.selectbox("Entidades", ["Aluno", "Personal", "Professor"])
 
     if entidade == "Aluno":
-
         operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
 
         if operacao == "Incluir":
-            aluno = Aluno(0, 0, 0, "", "", "", 0)
-        
-            aluno.cpf = st.number_input("CPF do Aluno: ")
-            aluno.rg_aluno = st.number_input("Rg do Aluno: ") or None
-            aluno.telefone_aluno = st.number_input("Informe seu número: ") or None
-            aluno.nome_aluno = st.text_input("Nome do Aluno: ")
-            aluno.objetivo_treino = st.text_input("Objetivo de treino: ") or None
-            aluno.tipo_plano = st.text_input("Tipo do plano: ")
-            aluno.cpf_pers = st.number_input("CPF do Personal: ") or None
+            with st.form("form_aluno"):
+                st.subheader("Cadastrar Aluno")
             
-        
-        if st.button("Cadastrar"):
-            incluirPessoa(aluno)
-            st.success("Aluno cadastrado com sucesso!")
+            # Campos obrigatórios primeiro
+                cpf = st.number_input("CPF do Aluno *", min_value=0, step=1, format="%d")
+                nome = st.text_input("Nome do Aluno *")
+                tipo_plano = st.text_input("Tipo do plano *")
+                
+            
+            # Campos opcionais
+                rg = st.number_input("RG do Aluno", min_value=0, step=1, format="%d")
+                telefone = st.number_input("Telefone do Aluno", min_value=0, step=1, format="%d")
+                objetivo = st.text_input("Objetivo de treino")
+                cpf_personal = st.number_input("CPF do Personal *", min_value=0, step=1, format="%d")
+            
+                submitted = st.form_submit_button("Cadastrar Aluno")
+            
+                if submitted:
+                # Validação
+                    if not cpf or not nome or not tipo_plano:
+                        st.error("Preencha todos os campos obrigatórios (*)")
+                    else:
+                        try:
+                        # Converte para None se for 0
+                            rg_val = int(rg) if rg and rg > 0 else None
+                            tel_val = int(telefone) if telefone and telefone > 0 else None
+                            obj_val = objetivo if objetivo else None
+                        
+                            aluno = Aluno(
+                            cpf=int(cpf),
+                            rg_aluno=rg_val,
+                            telefone_aluno=tel_val,
+                            nome_aluno=nome,
+                            objetivo_treino=obj_val,
+                            tipo_plano=tipo_plano,
+                            cpf_pers=int(cpf_personal)
+                            )
+                        
+                            incluirPessoa(aluno)
+                            st.success("Aluno cadastrado com sucesso!")
+                            st.rerun()  # Limpa o formulário
+                        
+                        except Exception as e:
+                            st.error(f"Erro ao cadastrar: {e}")
 
-        elif operacao == "Consultar":
+
+        if operacao == "Consultar":
             if st.button("Consultar"):
                 alunos = consultarAluno()
                 if alunos:
-                    df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
-                    st.dataframe(df, width=1000)
+                    df = pd.DataFrame(alunos)
+                    st.dataframe(df)
                 else:
                     st.info("Nenhum aluno cadastrado.")
+
+
 
         elif operacao == "Excluir":
             alunos = consultarAluno()
             if alunos:
-                df = pd.DataFrame(alunos, columns=["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"])
+                df = pd.DataFrame(alunos)
                 st.dataframe(df, width=1000)
-            
-                cpf = st.number_input("CPF do aluno a excluir:", min_value=1)
+    
+                cpf = st.number_input("CPF do aluno a excluir:", min_value=0, step=1, format="%d")
+        
                 if st.button("Excluir"):
-                    excluirAluno(cpf)
-                    st.success("Aluno excluído!")
-                    st.rerun()
-                else:
-                    st.info("Não foi possível achar o aluno")
+            # Agora a função retorna True/False
+                    if excluirAluno(cpf):
+                        st.success("Aluno excluído com sucesso!")
+                        st.rerun()
+                    else:
+                        st.error("Aluno não encontrado!")
             else:
                 st.info("Nenhum aluno cadastrado.")
 
         elif operacao == "Alterar":
             alunos = consultarAluno()
+    
             if alunos:
-                df = pd.DataFrame(alunos, columns=["CPF Aluno", "RG", "Número", "Nome", "Objetivo De Treino", "Tipo do Plano", "CPF do Personal"])
-                st.dataframe(df, width=1000)
-    
-                cpf = st.number_input("CPF do aluno a alterar:", min_value=1, key="cpf_aluno_alterar")
-                aluno_check = next((a for a in alunos if a[0] == cpf), None)
-    
-                if aluno_check:
-                    aluno_att = Aluno(*aluno_check[:7])
+                df = pd.DataFrame(alunos)
+                st.dataframe(df)
         
-                    with st.form(key="alterarAluno"):
-               
-                        rg_value = aluno_att.rg_aluno or 0
-                        telefone_value = aluno_att.telefone_aluno or 0
-                        cpf_personal_value = aluno_att.cpf_pers or 0
-                        objetivo_value = aluno_att.objetivo_treino or 0
-                
-                        novo_rg = st.number_input("RG do Aluno:", value=rg_value, min_value=0)
-                        novo_telefone = st.number_input("Informe seu número:", value=telefone_value, min_value=0)
-                        novo_nome = st.text_input("Nome do Aluno:", value=aluno_att.nome_aluno or "")
-                        novo_objetivo = st.text_input("Objetivo de treino:", value=objetivo_value or "")
-                        novo_plano = st.text_input("Tipo do plano:", value=aluno_att.tipo_plano or "")
-                        novo_cpf_personal = st.number_input("CPF do Personal:", value=cpf_personal_value, min_value=0)
+        # Seleciona CPF do aluno
+                cpf = st.number_input("CPF do ALuno a alterar: ", min_value=0, step=1, format="%d")
+        
+        # Encontra o aluno (agora usando chave do dicionário)
+                aluno_check = next((a for a in alunos if a["CPF"] == cpf), None)
+        
+                if aluno_check:
+            # Cria objeto Aluno com os dados corretos (na ordem do construtor)
+                    aluno_att = Aluno(
+                    aluno_check["CPF"],           # cpf
+                    aluno_check["RG"],            # rg_aluno  
+                    aluno_check["Número"],        # telefone_aluno
+                    aluno_check["Nome"],          # nome_aluno
+                    aluno_check["Objetivo de treino"],  # objetivo_treino
+                    aluno_check["Tipo do Plano"], # tipo_plano
+                    aluno_check["CPF do Personal"] # cpf_pers
+                    )
             
+                    with st.form(key="alterarAluno"):
+                # Use os GETTERS para obter os valores atuais
+                        rg_value = aluno_att.get_rg_aluno() or 0
+                        telefone_value = aluno_att.get_telefone_aluno() or 0
+                        cpf_personal_value = aluno_att.get_cpf_pers() or 0
+                        objetivo_value = aluno_att.get_objetivo_treino() or ""
+                
+                # Campos de edição
+                        novo_rg = st.number_input("RG do Aluno:", value=rg_value, min_value=0, format="%d")
+                        novo_telefone = st.number_input("Informe seu número:", value=telefone_value, min_value=0, format="%d")
+                        novo_nome = st.text_input("Nome do Aluno:", value=aluno_att.get_nome_aluno() or "")
+                        novo_objetivo = st.text_input("Objetivo de treino:", value=objetivo_value)
+                        novo_plano = st.text_input("Tipo do plano:", value=aluno_att.get_tipo_plano() or "")
+                        novo_cpf_personal = st.number_input("CPF do Personal:", value=cpf_personal_value, min_value=0, format="%d")
+                
                         if st.form_submit_button("Salvar Alterações"):
+                    # Use os SETTERS corretamente
+                            aluno_att.set_rg_aluno(novo_rg if novo_rg != 0 else None)
+                            aluno_att.set_telefone_aluno(novo_telefone if novo_telefone != 0 else None)
+                            aluno_att.set_nome_aluno(novo_nome)
+                            aluno_att.set_objetivo_treino(novo_objetivo if novo_objetivo else None)
+                            aluno_att.set_tipo_plano(novo_plano)
+                            aluno_att.set_cpf_pers(novo_cpf_personal if novo_cpf_personal != 0 else None)
                     
-                            aluno_att.rg_aluno(novo_rg if novo_rg != 0 else None)
-                            aluno_att.telefone_aluno(novo_telefone if novo_telefone != 0 else None)
-                            aluno_att.nome_aluno(novo_nome or None)
-                            aluno_att.objetivo_treino(novo_objetivo or None)
-                            aluno_att.tipo_plano(novo_plano or None)
-                            aluno_att.cpf_pers(novo_cpf_personal if novo_cpf_personal != 0 else None)
-                    
-                            alterarAluno(aluno_att)
-                            st.success("Aluno atualizado!")
-                            st.rerun()
+                    # Chama a função de alteração
+                            if alterarAluno(aluno_att):
+                                st.success("Aluno atualizado com sucesso!")
+                                st.rerun()
+                            else:
+                                st.error("Erro ao atualizar aluno!")
                 else:
                     st.warning("Aluno não encontrado!")
             else:

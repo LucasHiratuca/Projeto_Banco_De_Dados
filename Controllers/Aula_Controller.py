@@ -29,7 +29,7 @@ def consultarAula():
     cursor = conexao.cursor()
     
     try:
-        cursor.execute('SELECT * FROM Aula)
+        cursor.execute("SELECT * FROM Aula")
         rows = cursor.fetchall()
         
         # Lista para armazenar os dados do relacionamento
