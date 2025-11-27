@@ -129,7 +129,7 @@ def show_pessoas_page():
 
                         submitted = st.form_submit_button("Cadastrar Aluno")
                 
-                    if st.form_submit_button("Salvar Alterações"):
+                        if st.form_submit_button("Salvar Alterações"):
                     
                             aluno_att.set_rg_aluno(novo_rg if novo_rg != 0 else None)
                             aluno_att.set_telefone_aluno(novo_telefone if novo_telefone != 0 else None)
