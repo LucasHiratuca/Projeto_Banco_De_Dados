@@ -11,8 +11,8 @@ def incluirMaquina(maquina): # CORREÇÃO: Recebe o objeto
     cursor = conexao.cursor()
     try:
         cursor.execute("""
-            INSERT INTO Maquina (Nome_Maquina, ID_Maquina, Parte_Trabalhada) # CORREÇÃO: Tabela Maquina e 3 colunas
-            VALUES (?, ?, ?) # CORREÇÃO: 3 placeholders
+            INSERT INTO Maquina (Nome_Maquina, ID_Maquina, Parte_Trabalhada)
+            VALUES (?, ?, ?) 
             """, (
                 maquina.nome, # CORREÇÃO: Acessa a propriedade
                 maquina.id_mqn, 
@@ -92,7 +92,7 @@ def alterarMaquina(maquina): # CORREÇÃO: Recebe o objeto
         ''', (
             maquina.id_mqn, # CORREÇÃO: Acessa a propriedade
             maquina.parte_trabalhada,
-            maquina.nome # CORREÇÃO: Usa a PK para o WHERE
+            maquina.nome 
         ))
         conexao.commit()
         print(f"Maquina {maquina.nome} alterada com sucesso!")
