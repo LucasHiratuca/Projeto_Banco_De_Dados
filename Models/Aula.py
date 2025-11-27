@@ -1,4 +1,5 @@
-class Alula:
+# Models/Aula.py
+class Aula: # CORREÇÃO: Renomeado de Alula para Aula
     def __init__(self, id_aula, tipo_aula, cpf_professor):
         self._id_aula = id_aula
         self._tipo_aula = tipo_aula
@@ -27,4 +28,3 @@ class Alula:
     @cpf_professor.setter
     def cpf_professor(self, value):
         self._cpf_professor = value
-

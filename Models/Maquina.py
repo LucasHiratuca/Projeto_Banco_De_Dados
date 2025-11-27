@@ -1,5 +1,6 @@
+# Models/Maquina.py
 class Maquina:
-    def __init__(self, nome, id_mqn, parte_trabalhada):
+    def __init__(self, nome_mqn, id_mqn, parte_trabalhada): # CORREÇÃO: Parâmetro 'nome' alterado para 'nome_mqn'
         self._nome_mqn = nome_mqn
         self._id_mqn = id_mqn
         self._parte_trabalhada = parte_trabalhada
@@ -30,8 +31,3 @@ class Maquina:
         self._parte_trabalhada = value
 
         pass
-
-    
-
-
-

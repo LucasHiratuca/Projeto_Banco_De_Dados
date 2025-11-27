@@ -1,8 +1,9 @@
+# Models/Produto.py
 class Produto:
     def __init__(self,tipo_pr ,nome_pr ,cpf_aluno, id_pr):
         self._id_pr = id_pr
         self._tipo_pr = tipo_pr
-        self._nome_pr_ = nome_pr
+        self._nome_pr = nome_pr # CORREÇÃO: Nome do atributo corrigido
         self._cpf_aluno = cpf_aluno
      
     def get_id_pr(self):
