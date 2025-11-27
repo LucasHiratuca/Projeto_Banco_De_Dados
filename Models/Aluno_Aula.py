@@ -19,5 +19,5 @@ class Aluno_Aula:
     def cpf_aluno(self, value):
         self._cpf_aluno = value
 
-        pass
+    pass
 

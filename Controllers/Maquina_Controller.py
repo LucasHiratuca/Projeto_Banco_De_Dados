@@ -1,3 +1,4 @@
+# Controllers/Maquina_Controller.py
 import sqlite3
 from Models.Maquina import Maquina
 
@@ -5,26 +6,28 @@ def conectaBD():
     conexao = sqlite3.connect("Academia.db")
     return conexao
 
-def incluirMaquina():
+def incluirMaquina(maquina): # CORREÇÃO: Recebe o objeto
     conexao = conectaBD()
     cursor = conexao.cursor()
     try:
         cursor.execute("""
-            INSERT INTO Plano (Nome_Maquina, ID_Maquina, Parte_Trabalhada)
-            VALUES (?, ?)
+            INSERT INTO Maquina (Nome_Maquina, ID_Maquina, Parte_Trabalhada) # CORREÇÃO: Tabela Maquina e 3 colunas
+            VALUES (?, ?, ?) # CORREÇÃO: 3 placeholders
             """, (
-                Maquina.nome_mqn_mqn(),
-                Maquina.id_mqn(),
-                Maquina.parte_trabalhada
+                maquina.nome, # CORREÇÃO: Acessa a propriedade
+                maquina.id_mqn, 
+                maquina.parte_trabalhada
             )) 
         conexao.commit()
         print("Maquina inserida com sucesso!")
+        return True
     except sqlite3.Error as e:
         print(f"Erro ao inserir maquina: {e}")
+        return False
     finally:
         conexao.close()
 
-def consultarPlano():
+def consultarMaquina(): # CORREÇÃO: Renomeado de consultarPlano
     conexao = conectaBD()
     cursor = conexao.cursor()
     
@@ -32,16 +35,18 @@ def consultarPlano():
         cursor.execute('SELECT * FROM Maquina')
         rows = cursor.fetchall()
         
-        # Lista para armazenar os dados do relacionamento
+        # Lista para armazenar os dados
         dados = []
         
         for row in rows:
-            Nome_Maquina, ID_Maquina = row
+            # CORREÇÃO: Desempacotar 3 colunas
+            Nome_Maquina, ID_Maquina, Parte_Trabalhada = row
             
             # Adiciona os dados à lista
             dados.append({
-                "Nome da Maquina: ": Nome_Maquina,
-                "ID do Maquina: ": ID_Maquina
+                "Nome da Maquina": Nome_Maquina,
+                "ID da Maquina": ID_Maquina,
+                "Parte Trabalhada": Parte_Trabalhada # Adicionado campo
             })
         
         return dados
@@ -54,37 +59,47 @@ def consultarPlano():
         conexao.close()
     
 
-def excluirPlano(Nome_Maquina):
+def excluirMaquina(Nome_Maquina): # CORREÇÃO: Renomeado de excluirPlano e usa Nome_Maquina (PK)
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Maquinas WHERE Nome_Maquina = ?", Nome_Maquina,)
+        # CORREÇÃO: Tabela Maquina e parâmetro em tupla
+        cursor.execute("DELETE FROM Maquina WHERE Nome_Maquina = ?", (Nome_Maquina,))
+        linhas_afetadas = cursor.rowcount
         conexao.commit()
-        print(f"Relacionamento com {Nome_Maquina,} excluído com sucesso!")
+        if linhas_afetadas > 0:
+            print(f"Maquina com nome {Nome_Maquina} excluída com sucesso!")
+            return True
+        else:
+            print(f"Nenhuma maquina encontrada com nome {Nome_Maquina}.")
+            return False
     except sqlite3.Error as e:
         print(f"Erro ao excluir maquina: {e}")
+        return False
     finally:
         if conexao:
             conexao.close()
 
-def alterarMaquina(Maquina):
+def alterarMaquina(maquina): # CORREÇÃO: Recebe o objeto
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
+        # Nome_Maquina é a chave primária
         cursor.execute('''
             UPDATE Maquina
-            SET ID_Treino = ?, Nome_Maquina = ?
-            WHERE ID_Treino = ?
+            SET ID_Maquina = ?, Parte_Trabalhada = ?
+            WHERE Nome_Maquina = ?
         ''', (
-            Maquina["Nome_Maquina"],
-            Maquina["ID_Maquina"],
-            Maquina[Parte_Trabalhada],
-
+            maquina.id_mqn, # CORREÇÃO: Acessa a propriedade
+            maquina.parte_trabalhada,
+            maquina.nome # CORREÇÃO: Usa a PK para o WHERE
         ))
         conexao.commit()
-        print(f"Tabela com {Maquina['Nome_Maquina']} alterado com sucesso!")
+        print(f"Maquina {maquina.nome} alterada com sucesso!")
+        return True
     except sqlite3.Error as e:
         print(f"Erro ao alterar Maquina: {e}")
+        return False
     finally:
         if conexao:
             conexao.close()

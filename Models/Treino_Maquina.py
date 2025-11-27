@@ -20,5 +20,5 @@ class Treino_Maquina:
     def nome_mqn(self, value):
         self._nome_mqn = value
 
-        pass
+    pass
 

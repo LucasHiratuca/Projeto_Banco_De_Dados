@@ -1,4 +1,4 @@
-# Controllers/Treino-Maquina.py
+# Controllers/Produto_Controller.py
 import sqlite3
 from Models.Produto import Produto
 
@@ -6,23 +6,25 @@ def conectaBD():
     conexao = sqlite3.connect("Academia.db")
     return conexao
 
-def incluirProduto():
+def incluirProduto(produto): # CORREÇÃO: Recebe o objeto
     conexao = conectaBD()
     cursor = conexao.cursor()
     try:
         cursor.execute("""
-            INSERT INTO Produto (ID_Produto,  Tipo_Produto,  Nome_Produto, CPF_Aluno)
-            VALUES (?, ?)
+            INSERT INTO Produto (ID_Produto, Tipo_Produto, Nome_Produto, CPF_Aluno)
+            VALUES (?, ?, ?, ?) # CORREÇÃO: 4 placeholders
             """, (
-                Produto.id_pr(),
-                Produto.tipo_pr(),
-                Produto.nome_pr(),
-                Produto.cpf_aluno()
+                produto.get_id_pr(), # CORREÇÃO: Acessa a propriedade
+                produto.get_tipo_pr(),
+                produto.get_nome_pr(),
+                produto.get_cpf_aluno()
             )) 
         conexao.commit()
         print("Produto inserido com sucesso!")
+        return True
     except sqlite3.Error as e:
         print(f"Erro ao inserir produto: {e}")
+        return False
     finally:
         conexao.close()
 
@@ -34,15 +36,18 @@ def consultarProduto():
         cursor.execute('SELECT * FROM Produto')
         rows = cursor.fetchall()
         
-        # Lista para armazenar os dados do relacionamento
+        # Lista para armazenar os dados
         dados = []
         
         for row in rows:
-            ID_Produto, CPF_Aluno = row
+            # CORREÇÃO: Desempacotar 4 colunas
+            ID_Produto, Tipo_Produto, Nome_Produto, CPF_Aluno = row
             
             # Adiciona os dados à lista
             dados.append({
                 "ID do Produto": ID_Produto,
+                "Tipo do Produto": Tipo_Produto,
+                "Nome do Produto": Nome_Produto,
                 "CPF do Aluno": CPF_Aluno
             })
         
@@ -56,15 +61,22 @@ def consultarProduto():
         conexao.close()
     
 
-def excluirProduto(CPF_Aluno):
+def excluirProduto(ID_Produto): # CORREÇÃO: Recebe ID_Produto para exclusão
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ?", CPF_Aluno,)
+        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ?", (ID_Produto,)) # CORREÇÃO: Usa ID_Produto com tupla
+        linhas_afetadas = cursor.rowcount
         conexao.commit()
-        print(f"Relacionamento com {CPF_Aluno,} excluído com sucesso!")
+        if linhas_afetadas > 0:
+            print(f"Produto com ID {ID_Produto} excluído com sucesso!")
+            return True
+        else:
+            print(f"Nenhum produto encontrado com ID {ID_Produto}.")
+            return False
     except sqlite3.Error as e:
         print(f"Erro ao excluir relacionamento: {e}")
+        return False
     finally:
         if conexao:
             conexao.close()
@@ -73,32 +85,44 @@ def excluirProdutoEsp(ID_Produto, CPF_Aluno):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ? AND CPF_Aluno = ?", ID_Produto, CPF_Aluno)
+        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ? AND CPF_Aluno = ?", (ID_Produto, CPF_Aluno)) # CORREÇÃO: Tupla
+        linhas_afetadas = cursor.rowcount
         conexao.commit()
-        print(f"Relacionamento com {CPF_Aluno,} e {ID_Produto} excluído com sucesso!")
+        if linhas_afetadas > 0:
+            print(f"Relacionamento com CPF {CPF_Aluno} e ID do Produto {ID_Produto} excluído com sucesso!")
+            return True
+        else:
+            print(f"Relacionamento com CPF {CPF_Aluno} e ID do Produto {ID_Produto} não encontrado.")
+            return False
     except sqlite3.Error as e:
         print(f"Erro ao excluir relacionamento: {e}")
+        return False
     finally:
         if conexao:
             conexao.close()
 
-def alterarProduto(Produto):
+def alterarProduto(produto, old_id_produto): # CORREÇÃO: Recebe o objeto e o ID antigo para WHERE
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
+        # Atualiza todos os campos menos o ID antigo
         cursor.execute('''
             UPDATE Produto
-            SET ID_Produto = ?, CPF_Aluno = ?
-            WHERE CPF_Aluno = ? 
+            SET ID_Produto = ?, Tipo_Produto = ?, Nome_Produto = ?, CPF_Aluno = ?
+            WHERE ID_Produto = ? 
         ''', (
-            Produto["ID_Produto"],
-            Produto["CPF_Aluno"],
-            Produto("CPF_Aluno")
+            produto.get_id_pr(),
+            produto.get_tipo_pr(),
+            produto.get_nome_pr(),
+            produto.get_cpf_aluno(),
+            old_id_produto # Usa o ID antigo para identificar o registro
         ))
         conexao.commit()
-        print(f"Relacionamento com {Produto['CPF_Aluno']} alterado com sucesso!")
+        print(f"Produto com ID {produto.get_id_pr()} alterado com sucesso!")
+        return True
     except sqlite3.Error as e:
         print(f"Erro ao alterar relacionamento: {e}")
+        return False
     finally:
         if conexao:
             conexao.close()
