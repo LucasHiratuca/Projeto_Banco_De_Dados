@@ -32,7 +32,6 @@ def show_itens_page():
                         st.error("Preencha todos os campos.")
                     else:
                         try:
-                            # CORREÇÃO: Cria o objeto Produto com 4 parâmetros
                             produto = Produto(
                                 tipo_pr=tipo_pr,
                                 nome_pr=nome_pr,
@@ -106,7 +105,7 @@ def show_itens_page():
                             produto_att.set_nome_pr(novo_nome)
                             produto_att.set_cpf_aluno(novo_cpf_aluno)
                             
-                            # Chama a função de alteração com o ID antigo
+                            
                             if alterarProduto(produto_att, old_id):
                                 st.success("Produto atualizado!")
                                 st.rerun()
@@ -154,7 +153,7 @@ def show_itens_page():
             if st.button("Consultar"):
                 maquinas = consultarMaquina()
                 if maquinas:
-                    # CORREÇÃO: Colunas ajustadas
+                  
                     df = pd.DataFrame(maquinas, columns=["Nome da Maquina", "ID da Maquina", "Parte Trabalhada"])
                     st.dataframe(df, width=1000)
                 else:
@@ -206,7 +205,6 @@ def show_itens_page():
                             maquina_att.id_mqn = novo_id
                             maquina_att.parte_trabalhada = nova_parte
                             
-                            # Chama a função de alteração
                             if alterarMaquina(maquina_att):
                                 st.success("Máquina atualizada!")
                                 st.rerun()
