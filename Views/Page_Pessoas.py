@@ -127,7 +127,6 @@ def show_pessoas_page():
                         novo_plano = st.text_input("Tipo do plano:", value=aluno_att.get_tipo_plano() or "")
                         novo_cpf_personal = st.number_input("CPF do Personal:", value=cpf_personal_value, min_value=0, format="%d")
 
-                        submitted = st.form_submit_button("Cadastrar Aluno")
                 
                         if st.form_submit_button("Salvar Alterações"):
                     
