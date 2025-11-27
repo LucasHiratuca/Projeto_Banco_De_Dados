@@ -1,28 +1,31 @@
 # Controllers/Aula_Controller.py
 import sqlite3
-from Models.Aula import Aula # CORREÇÃO: Importar a classe renomeada
+from Models.Aula import Aula
 
 def conectaBD():
     conexao = sqlite3.connect("Academia.db")
     return conexao
 
-def incluirAula(aula): # CORREÇÃO: Recebe o objeto
+def incluirAula(aula): 
     conexao = conectaBD()
     cursor = conexao.cursor()
     try:
         cursor.execute("""
             INSERT INTO Aula (ID_Aula, Tipo_Aula, CPF_Professor)
-            VALUES (?, ?, ?) # CORREÇÃO: 3 placeholders
+            VALUES (?, ?, ?)
             """, (
-                aula.id_aula, # CORREÇÃO: Acessa a propriedade do objeto
+                aula.id_aula,
                 aula.tipo_aula,
                 aula.cpf_professor
             )) 
         conexao.commit()
         print("Aula inserida com sucesso!")
         return True
+    except sqlite3.IntegrityError as e: # NOVO TRATAMENTO
+        print(f"ERRO DE INTEGRIDADE ao inserir Aula: O ID ou Tipo de Aula ja existe, ou o CPF do Professor e invalido. Detalhe: {e}")
+        return False
     except sqlite3.Error as e:
-        print(f"Erro ao inserir Aula: {e}")
+        print(f"Erro geral ao inserir Aula: {e}")
         return False
     finally:
         conexao.close()
@@ -35,17 +38,14 @@ def consultarAula():
         cursor.execute("SELECT * FROM Aula")
         rows = cursor.fetchall()
         
-        # Lista para armazenar os dados do relacionamento
         dados = []
         
         for row in rows:
-            # CORREÇÃO: Desempacotar 3 colunas
             ID_Aula, Tipo_Aula, CPF_Professor = row
             
-            # Adiciona os dados à lista
             dados.append({
                 "ID da Aula": ID_Aula,
-                "Tipo da Aula": Tipo_Aula, # CORREÇÃO: Campo adicionado
+                "Tipo da Aula": Tipo_Aula,
                 "CPF do Professor": CPF_Professor
             })
         
@@ -59,11 +59,11 @@ def consultarAula():
         conexao.close()
     
 
-def excluirAula(ID_Aula): # CORREÇÃO: Recebe ID_Aula e usa tupla
+def excluirAula(ID_Aula):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Aula WHERE ID_Aula = ?", (ID_Aula,)) # CORREÇÃO: Tupla (ID_Aula,)
+        cursor.execute("DELETE FROM Aula WHERE ID_Aula = ?", (ID_Aula,))
         linhas_afetadas = cursor.rowcount
         conexao.commit()
         if linhas_afetadas > 0:
@@ -83,7 +83,6 @@ def excluirAulaEsp(ID_Aula, CPF_Professor):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        # CORREÇÃO: Parâmetros como tupla
         cursor.execute("DELETE FROM Aula WHERE ID_Aula = ? AND CPF_Professor = ?", (ID_Aula, CPF_Professor))
         linhas_afetadas = cursor.rowcount
         conexao.commit()
@@ -100,19 +99,18 @@ def excluirAulaEsp(ID_Aula, CPF_Professor):
         if conexao:
             conexao.close()
 
-def alterarAula(aula): # CORREÇÃO: Recebe o objeto
+def alterarAula(aula):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        # ID_Aula é a chave primária, então a atualização deve ser feita com base nela.
         cursor.execute('''
             UPDATE Aula
             SET Tipo_Aula = ?, CPF_Professor = ?
             WHERE ID_Aula = ? 
         ''', (
-            aula.tipo_aula, # CORREÇÃO: Acessa a propriedade
+            aula.tipo_aula,
             aula.cpf_professor,
-            aula.id_aula # CORREÇÃO: Usa a PK para o WHERE
+            aula.id_aula
         ))
         conexao.commit()
         print(f"Aula com ID {aula.id_aula} alterada com sucesso!")

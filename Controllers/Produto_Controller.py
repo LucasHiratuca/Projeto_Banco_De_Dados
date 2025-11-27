@@ -12,9 +12,9 @@ def incluirProduto(produto): # CORREÇÃO: Recebe o objeto
     try:
         cursor.execute("""
             INSERT INTO Produto (ID_Produto, Tipo_Produto, Nome_Produto, CPF_Aluno)
-            VALUES (?, ?, ?, ?) # CORREÇÃO: 4 placeholders
+            VALUES (?, ?, ?, ?) 
             """, (
-                produto.get_id_pr(), # CORREÇÃO: Acessa a propriedade
+                produto.get_id_pr(),
                 produto.get_tipo_pr(),
                 produto.get_nome_pr(),
                 produto.get_cpf_aluno()
@@ -22,7 +22,10 @@ def incluirProduto(produto): # CORREÇÃO: Recebe o objeto
         conexao.commit()
         print("Produto inserido com sucesso!")
         return True
-    except sqlite3.Error as e:
+    except sqlite3.IntegrityError as e: # Trata erros de chave primária/FK
+        print(f"ERRO DE INTEGRIDADE ao inserir produto: O ID ou CPF do Aluno ja existe/e invalido. Detalhe: {e}")
+        return False
+    except sqlite3.Error as e: # Trata outros erros, incluindo o 'unrecognized token'
         print(f"Erro ao inserir produto: {e}")
         return False
     finally:
@@ -36,14 +39,12 @@ def consultarProduto():
         cursor.execute('SELECT * FROM Produto')
         rows = cursor.fetchall()
         
-        # Lista para armazenar os dados
         dados = []
         
         for row in rows:
-            # CORREÇÃO: Desempacotar 4 colunas
+            # Colunas da tabela Produto: ID_Produto, Tipo_Produto, Nome_Produto, CPF_Aluno
             ID_Produto, Tipo_Produto, Nome_Produto, CPF_Aluno = row
             
-            # Adiciona os dados à lista
             dados.append({
                 "ID do Produto": ID_Produto,
                 "Tipo do Produto": Tipo_Produto,
@@ -61,11 +62,11 @@ def consultarProduto():
         conexao.close()
     
 
-def excluirProduto(ID_Produto): # CORREÇÃO: Recebe ID_Produto para exclusão
+def excluirProduto(ID_Produto):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ?", (ID_Produto,)) # CORREÇÃO: Usa ID_Produto com tupla
+        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ?", (ID_Produto,))
         linhas_afetadas = cursor.rowcount
         conexao.commit()
         if linhas_afetadas > 0:
@@ -85,7 +86,7 @@ def excluirProdutoEsp(ID_Produto, CPF_Aluno):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ? AND CPF_Aluno = ?", (ID_Produto, CPF_Aluno)) # CORREÇÃO: Tupla
+        cursor.execute("DELETE FROM Produto WHERE ID_Produto = ? AND CPF_Aluno = ?", (ID_Produto, CPF_Aluno))
         linhas_afetadas = cursor.rowcount
         conexao.commit()
         if linhas_afetadas > 0:
@@ -101,11 +102,10 @@ def excluirProdutoEsp(ID_Produto, CPF_Aluno):
         if conexao:
             conexao.close()
 
-def alterarProduto(produto, old_id_produto): # CORREÇÃO: Recebe o objeto e o ID antigo para WHERE
+def alterarProduto(produto, old_id_produto):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        # Atualiza todos os campos menos o ID antigo
         cursor.execute('''
             UPDATE Produto
             SET ID_Produto = ?, Tipo_Produto = ?, Nome_Produto = ?, CPF_Aluno = ?
@@ -115,7 +115,7 @@ def alterarProduto(produto, old_id_produto): # CORREÇÃO: Recebe o objeto e o I
             produto.get_tipo_pr(),
             produto.get_nome_pr(),
             produto.get_cpf_aluno(),
-            old_id_produto # Usa o ID antigo para identificar o registro
+            old_id_produto
         ))
         conexao.commit()
         print(f"Produto com ID {produto.get_id_pr()} alterado com sucesso!")

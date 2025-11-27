@@ -9,7 +9,7 @@ from Models.Aula import Aula
 from Models.Treino import Treino
 from Models.Plano import Plano
 
-def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
+def show_recursos_page():
     st.title('Cadastro de Recursos e Planos')
 
     recurso = st.sidebar.selectbox("Recurso", ["Aula", "Treino", "Plano"])
@@ -31,7 +31,6 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
                         st.error("Preencha todos os campos.")
                     else:
                         try:
-                            # Cria o objeto Aula
                             aula = Aula(int(id_aula), tipo_aula, int(cpf_prof))
                             if incluirAula(aula):
                                 st.success("Aula cadastrada com sucesso!")
@@ -43,6 +42,7 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
             if st.button("Consultar"):
                 aulas = consultarAula()
                 if aulas:
+                    # CORREÇÃO: Colunas explicitamente definidas conforme o Controller retorna
                     df = pd.DataFrame(aulas, columns=["ID da Aula", "Tipo da Aula", "CPF do Professor"])
                     st.dataframe(df, width=1000)
                 else:
@@ -64,7 +64,7 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
             else:
                 st.info("Nenhuma aula cadastrada.")
 
-        elif operacao == "Excluir Específico": # Bloco adicionado
+        elif operacao == "Excluir Específico":
             aulas = consultarAula()
             if aulas:
                 df = pd.DataFrame(aulas, columns=["ID da Aula", "Tipo da Aula", "CPF do Professor"])
@@ -90,6 +90,7 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
     
                 id_original = st.number_input("ID da aula a alterar:", min_value=1, step=1, key="aula_alterar")
                 
+                # CORREÇÃO: Busca por chave do dicionário ("ID da Aula")
                 aula_check = next((a for a in aulas if a["ID da Aula"] == id_original), None)
     
                 if aula_check:
@@ -140,7 +141,6 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
                         st.error("Preencha o ID do Treino e o CPF do Aluno.")
                     else:
                         try:
-                            # CORREÇÃO: Cria o objeto Treino com todos os 6 parâmetros
                             treino = Treino(
                                 id=int(id_tr), 
                                 alongamentos=alongamento, 
@@ -160,7 +160,9 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
             if st.button("Consultar"):
                 treinos = consultarTreino()
                 if treinos:
-                    df = pd.DataFrame(treinos, columns=["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"])
+                    # CORREÇÃO: Colunas explicitamente definidas conforme o Controller retorna
+                    columns_list = ["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"]
+                    df = pd.DataFrame(treinos, columns=columns_list)
                     st.dataframe(df, width=1000)
                 else:
                     st.info("Nenhum resultado encontrado. ")
@@ -168,7 +170,8 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
         elif operacao == "Excluir":
             treinos = consultarTreino()
             if treinos:
-                df = pd.DataFrame(treinos, columns=["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"])
+                columns_list = ["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"]
+                df = pd.DataFrame(treinos, columns=columns_list)
                 st.dataframe(df, width=1000)
             
                 id = st.number_input("ID do treino a excluir:", min_value=1, step=1, format="%d")
@@ -185,7 +188,8 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
         elif operacao == "Excluir Específico":
             treinos = consultarTreino()
             if treinos:
-                df = pd.DataFrame(treinos, columns=["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"])
+                columns_list = ["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"]
+                df = pd.DataFrame(treinos, columns=columns_list)
                 st.dataframe(df, width=1000)
             
                 id = st.number_input("ID do treino a excluir:", min_value=1, step=1, format="%d")
@@ -204,10 +208,12 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
         elif operacao == "Alterar":
             treinos = consultarTreino()
             if treinos:
-                df = pd.DataFrame(treinos, columns=["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"])
+                columns_list = ["ID do Treino", "Alongamentos", "Ex. Aeróbicos", "Ex. Máquina", "Carga", "CPF Aluno"]
+                df = pd.DataFrame(treinos, columns=columns_list)
                 st.dataframe(df, width=1000)
     
                 id_original = st.number_input("ID do treino a alterar:", min_value=1, step=1, key="id_treino_alterar")
+                # CORREÇÃO: Busca por chave do dicionário ("ID do Treino")
                 treino_check = next((t for t in treinos if t["ID do Treino"] == id_original), None)
     
                 if treino_check:
@@ -274,6 +280,7 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
             if st.button("Consultar"):
                 planos = consultarPlano()
                 if planos:
+                    # CORREÇÃO: Colunas explicitamente definidas conforme o Controller retorna
                     df = pd.DataFrame(planos, columns=["Tipo do Plano", "Id do Plano"])
                     st.dataframe(df, width=1000)
                 else:
@@ -303,6 +310,7 @@ def show_recursos_page(): # CORREÇÃO: Renomeado para show_recursos_page
                 st.dataframe(df, width=1000)
     
                 tipo_original = st.text_input("Tipo do plano a alterar:", key="plano_alterar")
+                # CORREÇÃO: Busca por chave do dicionário ("Tipo do Plano")
                 plano_check = next((p for p in planos if p["Tipo do Plano"] == tipo_original), None)
     
                 if plano_check:

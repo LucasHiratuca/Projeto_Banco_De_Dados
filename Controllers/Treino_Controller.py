@@ -12,7 +12,7 @@ def incluirTreino(treino): # CORREÇÃO: Recebe o objeto
     try:
         cursor.execute("""
             INSERT INTO Treino (ID_Treino, Alongamentos, Exercicios_Aerobicos, Exercicios_Maquina ,Carga , CPF_Aluno)
-            VALUES (?, ?, ?, ?, ?, ?) # CORREÇÃO: 6 placeholders
+            VALUES (?, ?, ?, ?, ?, ?) 
             """, (
                treino.id, # CORREÇÃO: Acessa a propriedade
                treino.alongamentos,

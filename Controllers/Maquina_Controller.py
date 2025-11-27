@@ -6,28 +6,32 @@ def conectaBD():
     conexao = sqlite3.connect("Academia.db")
     return conexao
 
-def incluirMaquina(maquina): # CORREÇÃO: Recebe o objeto
+def incluirMaquina(maquina):
     conexao = conectaBD()
     cursor = conexao.cursor()
     try:
+        # Usando Maquina (PascalCase)
         cursor.execute("""
-            INSERT INTO Maquina (Nome_Maquina, ID_Maquina, Parte_Trabalhada) # CORREÇÃO: Tabela Maquina e 3 colunas
-            VALUES (?, ?, ?) # CORREÇÃO: 3 placeholders
+            INSERT INTO Maquina (Nome_Maquina, ID_Maquina, Parte_Trabalhada)
+            VALUES (?, ?, ?)
             """, (
-                maquina.nome, # CORREÇÃO: Acessa a propriedade
+                maquina.nome, 
                 maquina.id_mqn, 
                 maquina.parte_trabalhada
             )) 
         conexao.commit()
         print("Maquina inserida com sucesso!")
         return True
+    except sqlite3.IntegrityError as e:
+        print(f"ERRO DE INTEGRIDADE ao inserir maquina: O ID ou Nome da Maquina ja existe. Detalhe: {e}")
+        return False
     except sqlite3.Error as e:
         print(f"Erro ao inserir maquina: {e}")
         return False
     finally:
         conexao.close()
 
-def consultarMaquina(): # CORREÇÃO: Renomeado de consultarPlano
+def consultarMaquina():
     conexao = conectaBD()
     cursor = conexao.cursor()
     
@@ -35,18 +39,15 @@ def consultarMaquina(): # CORREÇÃO: Renomeado de consultarPlano
         cursor.execute('SELECT * FROM Maquina')
         rows = cursor.fetchall()
         
-        # Lista para armazenar os dados
         dados = []
         
         for row in rows:
-            # CORREÇÃO: Desempacotar 3 colunas
             Nome_Maquina, ID_Maquina, Parte_Trabalhada = row
             
-            # Adiciona os dados à lista
             dados.append({
                 "Nome da Maquina": Nome_Maquina,
                 "ID da Maquina": ID_Maquina,
-                "Parte Trabalhada": Parte_Trabalhada # Adicionado campo
+                "Parte Trabalhada": Parte_Trabalhada
             })
         
         return dados
@@ -59,11 +60,10 @@ def consultarMaquina(): # CORREÇÃO: Renomeado de consultarPlano
         conexao.close()
     
 
-def excluirMaquina(Nome_Maquina): # CORREÇÃO: Renomeado de excluirPlano e usa Nome_Maquina (PK)
+def excluirMaquina(Nome_Maquina):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        # CORREÇÃO: Tabela Maquina e parâmetro em tupla
         cursor.execute("DELETE FROM Maquina WHERE Nome_Maquina = ?", (Nome_Maquina,))
         linhas_afetadas = cursor.rowcount
         conexao.commit()
@@ -79,20 +79,40 @@ def excluirMaquina(Nome_Maquina): # CORREÇÃO: Renomeado de excluirPlano e usa 
     finally:
         if conexao:
             conexao.close()
-
-def alterarMaquina(maquina): # CORREÇÃO: Recebe o objeto
+            
+def excluirMaquinaEsp(Nome_Maquina, ID_Maquina):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
-        # Nome_Maquina é a chave primária
+        cursor.execute("DELETE FROM Maquina WHERE Nome_Maquina = ? AND ID_Maquina = ?", (Nome_Maquina, ID_Maquina))
+        linhas_afetadas = cursor.rowcount
+        conexao.commit()
+        if linhas_afetadas > 0:
+            print(f"Maquina com nome {Nome_Maquina} e ID {ID_Maquina} excluída com sucesso!")
+            return True
+        else:
+            print(f"Maquina com nome {Nome_Maquina} e ID {ID_Maquina} não encontrada.")
+            return False
+    except sqlite3.Error as e:
+        print(f"Erro ao excluir relacionamento: {e}")
+        return False
+    finally:
+        if conexao:
+            conexao.close()
+
+def alterarMaquina(maquina, old_nome_maquina):
+    try:
+        conexao = conectaBD()
+        cursor = conexao.cursor()
         cursor.execute('''
             UPDATE Maquina
-            SET ID_Maquina = ?, Parte_Trabalhada = ?
+            SET Nome_Maquina = ?, ID_Maquina = ?, Parte_Trabalhada = ?
             WHERE Nome_Maquina = ?
         ''', (
-            maquina.id_mqn, # CORREÇÃO: Acessa a propriedade
+            maquina.nome, 
+            maquina.id_mqn, 
             maquina.parte_trabalhada,
-            maquina.nome # CORREÇÃO: Usa a PK para o WHERE
+            old_nome_maquina 
         ))
         conexao.commit()
         print(f"Maquina {maquina.nome} alterada com sucesso!")

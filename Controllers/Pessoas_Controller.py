@@ -1,4 +1,5 @@
 # Controllers/Pessoas_Controller.py
+
 # CRUD de Aluno, Professor e Personal
 
 import sqlite3
@@ -28,36 +29,39 @@ def incluirPessoa(pessoa):
                 pessoa.get_cpf_pers(),
             )) 
         elif isinstance(pessoa, Professor):
-            # CORREÇÃO: Usar os métodos getter corretos (get_...)
+            # CORREÇÃO: Usando nomes de coluna SIMPLIFICADOS (RG, Nome, Horario, Telefone)
             cursor.execute("""
-                INSERT INTO Professor (CPF_Professor, RG_Prof, Nome_Prof, Horarios_Prof, Telefone_Prof)
+                INSERT INTO Professor (CPF_Professor, RG, Nome, Horario, Telefone)
                 VALUES (?, ?, ?, ?, ?)
             """, (
-                pessoa.get_cpf(), # CORREÇÃO: Usar get_cpf()
-                pessoa.get_rg_prof(),
-                pessoa.get_nome_prof(),
-                pessoa.get_horario_prof(),
-                pessoa.get_telefone_prof()        
+                pessoa.get_cpf(), 
+                pessoa.get_rg_prof(), # Mapeia para RG
+                pessoa.get_nome_prof(), # Mapeia para Nome
+                pessoa.get_horario_prof(), # Mapeia para Horario
+                pessoa.get_telefone_prof() # Mapeia para Telefone
             ))
 
         elif isinstance(pessoa, Personal):
-            # CORREÇÃO: Usar os métodos getter corretos (get_...)
+            # CORREÇÃO: Usando nomes de coluna SIMPLIFICADOS (RG, Nome, Horario, Telefone)
             cursor.execute("""
-                INSERT INTO Personal (CPF_Personal, RG_Personal, Nome_Personal, Horarios_Personal, Telefone_Personal)
+                INSERT INTO Personal (CPF_Personal, RG, Nome, Horario, Telefone)
                 VALUES (?, ?, ?, ?, ?)
             """, (
-                pessoa.get_cpf(), # CORREÇÃO: Usar get_cpf()
-                pessoa.get_rg_pers(),
-                pessoa.get_nome_pers(),
-                pessoa.get_horario_pers(),
-                pessoa.get_telefone_pers()
+                pessoa.get_cpf(), 
+                pessoa.get_rg_pers(), # Mapeia para RG
+                pessoa.get_nome_pers(), # Mapeia para Nome
+                pessoa.get_horario_pers(), # Mapeia para Horario
+                pessoa.get_telefone_pers() # Mapeia para Telefone
                 
             )) 
         conexao.commit()
         print("Entidade inserida com sucesso!")
         return True
-    except sqlite3.Error as e:
-        print(f"Erro ao inserir a entidade: {e}")
+    except sqlite3.IntegrityError as e: 
+        print(f"ERRO DE INTEGRIDADE ao inserir Pessoa: Violação de chave (CPF/RG/Telefone duplicado ou Foreign Key inválida). Detalhe: {e}")
+        return False
+    except sqlite3.Error as e: 
+        print(f"Erro geral ao inserir a entidade: {e}")
         return False
     finally:
         conexao.close()
@@ -73,13 +77,13 @@ def consultarAluno():
         dados = []
         for row in rows:
             
-            CPF_Aluno = row[0]        # CPF_Aluno
-            RG = row[1]               # RG
-            Telefone = row[2]         # Telefone
-            Nome = row[3]             # Nome
-            Objetivo_Treino = row[4]  # Objetivo_Treino
-            Tipo_Plano = row[5]       # Tipo_Plano
-            CPF_Personal = row[6]     # CPF_Personal
+            CPF_Aluno = row[0]
+            RG = row[1]
+            Telefone = row[2]
+            Nome = row[3]
+            Objetivo_Treino = row[4]
+            Tipo_Plano = row[5]
+            CPF_Personal = row[6]
             
             dados.append({
                 "CPF": CPF_Aluno,
@@ -108,13 +112,12 @@ def consultarProfessor():
         cursor.execute('SELECT * FROM Professor')
         rows = cursor.fetchall()
         
-        # Lista para armazenar os dados dos professores
         dados = []
         
         for row in rows:
-            CPF_Professor, RG, Nome, Horario, Telefone = row
+            # Colunas no DB: CPF_Professor, RG, Nome, Horario, Telefone
+            CPF_Professor, RG, Nome, Horario, Telefone = row 
             
-            # CORREÇÃO: Chaves simplificadas para uso no DataFrame
             dados.append({
                 "CPF": CPF_Professor,
                 "RG": RG,
@@ -140,12 +143,12 @@ def consultarPersonal():
         cursor.execute('SELECT * FROM Personal')
         rows = cursor.fetchall()
         
-        # Lista para armazenar os dados dos personais
         dados = []
         
         for row in rows:
+            # Colunas no DB: CPF_Personal, RG, Nome, Horario, Telefone
             CPF_Personal, RG, Nome, Horario, Telefone = row
-            # CORREÇÃO: Chaves simplificadas para uso no DataFrame
+            
             dados.append({
                 "CPF": CPF_Personal,
                 "RG": RG,
@@ -168,7 +171,6 @@ def excluirAluno(cpf):
         conexao = conectaBD()
         cursor = conexao.cursor()
         
-        # Correção da tupla para o parâmetro
         cursor.execute("DELETE FROM Aluno WHERE CPF_Aluno = ?", (cpf,))
         
         linhas_afetadas = cursor.rowcount
@@ -193,7 +195,7 @@ def excluirProfessor(cpf):
         conexao = conectaBD()
         cursor = conexao.cursor()
         cursor.execute("DELETE FROM Professor WHERE CPF_Professor = ?", (cpf,))
-        linhas_afetadas = cursor.rowcount # Adicionado verificação
+        linhas_afetadas = cursor.rowcount 
         conexao.commit()
         
         if linhas_afetadas > 0:
@@ -214,7 +216,7 @@ def excluirPersonal(cpf):
         conexao = conectaBD()
         cursor = conexao.cursor()
         cursor.execute("DELETE FROM Personal WHERE CPF_Personal = ?", (cpf,))
-        linhas_afetadas = cursor.rowcount # Adicionado verificação
+        linhas_afetadas = cursor.rowcount 
         conexao.commit()
         
         if linhas_afetadas > 0:
@@ -258,20 +260,21 @@ def alterarAluno(aluno):
             conexao.close()
 
 
-def alterarProfessor(professor): # CORREÇÃO: Recebe o objeto e usa getters
+def alterarProfessor(professor):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
+        # CORREÇÃO: Usando nomes de coluna SIMPLIFICADOS
         cursor.execute('''
             UPDATE Professor 
-            SET RG_Prof = ?, Nome_Prof = ?, Horarios_Prof = ?, Telefone_Prof = ?
+            SET RG = ?, Nome = ?, Horario = ?, Telefone = ?
             WHERE CPF_Professor = ?
         ''', (
-            professor.get_rg_prof(),
+            professor.get_rg_prof(), 
             professor.get_nome_prof(),
-            professor.get_horario_prof(),
+            professor.get_horario_prof(), 
             professor.get_telefone_prof(),
-            professor.get_cpf()
+            professor.get_cpf(),
         )) 
         conexao.commit()
         print(f"Professor com CPF {professor.get_cpf()} alterado com sucesso!")
@@ -284,20 +287,21 @@ def alterarProfessor(professor): # CORREÇÃO: Recebe o objeto e usa getters
             conexao.close()
 
         
-def alterarPersonal(personal): # CORREÇÃO: Recebe o objeto e usa getters
+def alterarPersonal(personal):
     try:
         conexao = conectaBD()
         cursor = conexao.cursor()
+        # CORREÇÃO: Usando nomes de coluna SIMPLIFICADOS
         cursor.execute('''
             UPDATE Personal 
-            SET RG_Personal = ?, Nome_Personal = ?, Horarios_Personal = ?, Telefone_Personal = ?
+            SET RG = ?, Nome = ?, Horario = ?, Telefone = ?
             WHERE CPF_Personal = ?
         ''', (
-            personal.get_rg_pers(),
+            personal.get_rg_pers(), 
             personal.get_nome_pers(),
             personal.get_horario_pers(),
             personal.get_telefone_pers(),
-            personal.get_cpf()
+            personal.get_cpf(),
         )) 
         conexao.commit()
         print(f"Personal com CPF {personal.get_cpf()} alterado com sucesso!")

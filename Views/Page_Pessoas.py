@@ -5,6 +5,7 @@ import pandas as pd
 from Controllers.Pessoas_Controller import *
 from Models.Professor import Professor
 from Models.Personal import Personal
+from Models.Aluno import Aluno # Certificar que Aluno está importado
 
 def show_pessoas_page():
     st.title('Cadastro de Pessoas')
@@ -13,7 +14,7 @@ def show_pessoas_page():
 
     if entidade == "Aluno":
         operacao = st.sidebar.selectbox("Operações", ["Incluir", "Consultar", "Excluir", "Alterar"])
-        # ... (BLOCO ALUNO JÁ CORRETO)
+        
         if operacao == "Incluir":
             with st.form("form_aluno"):
                 st.subheader("Cadastrar Aluno")
@@ -55,27 +56,30 @@ def show_pessoas_page():
                         
                             if incluirPessoa(aluno):
                                 st.success("Aluno cadastrado com sucesso!")
-                                st.rerun()  # Limpa o formulário
+                                st.rerun() 
+                            else:
+                                st.error("Falha ao cadastrar: Verifique se o CPF/RG já existe ou se o CPF do Personal e o Tipo de Plano são válidos.")
                         
                         except Exception as e:
-                            st.error(f"Erro ao cadastrar: {e}")
+                            st.error(f"Erro inesperado no sistema: {e}")
 
 
         if operacao == "Consultar":
             if st.button("Consultar"):
                 alunos = consultarAluno()
                 if alunos:
-                    df = pd.DataFrame(alunos)
+                    columns_list = ["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"]
+                    df = pd.DataFrame(alunos, columns=columns_list)
                     st.dataframe(df)
                 else:
                     st.info("Nenhum aluno cadastrado.")
 
 
-
         elif operacao == "Excluir":
             alunos = consultarAluno()
             if alunos:
-                df = pd.DataFrame(alunos)
+                columns_list = ["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"]
+                df = pd.DataFrame(alunos, columns=columns_list)
                 st.dataframe(df, width=1000)
     
                 cpf = st.number_input("CPF do aluno a excluir:", min_value=1, step=1, format="%d")
@@ -93,35 +97,31 @@ def show_pessoas_page():
             alunos = consultarAluno()
     
             if alunos:
-                df = pd.DataFrame(alunos)
+                columns_list = ["CPF", "RG", "Número", "Nome", "Objetivo de treino", "Tipo do Plano", "CPF do Personal"]
+                df = pd.DataFrame(alunos, columns=columns_list)
                 st.dataframe(df)
         
-        # Seleciona CPF do aluno
                 cpf = st.number_input("CPF do ALuno a alterar: ", min_value=1, step=1, format="%d")
         
-        # Encontra o aluno (agora usando chave do dicionário)
                 aluno_check = next((a for a in alunos if a["CPF"] == cpf), None)
         
                 if aluno_check:
-            # Cria objeto Aluno com os dados corretos (na ordem do construtor)
                     aluno_att = Aluno(
-                    aluno_check["CPF"],           # cpf
-                    aluno_check["RG"],            # rg_aluno  
-                    aluno_check["Número"],        # telefone_aluno
-                    aluno_check["Nome"],          # nome_aluno
-                    aluno_check["Objetivo de treino"],  # objetivo_treino
-                    aluno_check["Tipo do Plano"], # tipo_plano
-                    aluno_check["CPF do Personal"] # cpf_pers
+                    aluno_check["CPF"],           
+                    aluno_check["RG"],            
+                    aluno_check["Número"],        
+                    aluno_check["Nome"],          
+                    aluno_check["Objetivo de treino"],  
+                    aluno_check["Tipo do Plano"], 
+                    aluno_check["CPF do Personal"] 
                     )
             
                     with st.form(key="alterarAluno"):
-                # Use os GETTERS para obter os valores atuais
                         rg_value = aluno_att.get_rg_aluno() or 0
                         telefone_value = aluno_att.get_telefone_aluno() or 0
                         cpf_personal_value = aluno_att.get_cpf_pers() or 0
                         objetivo_value = aluno_att.get_objetivo_treino() or ""
                 
-                # Campos de edição
                         novo_rg = st.number_input("RG do Aluno:", value=rg_value, min_value=0, format="%d")
                         novo_telefone = st.number_input("Informe seu número:", value=telefone_value, min_value=0, format="%d")
                         novo_nome = st.text_input("Nome do Aluno:", value=aluno_att.get_nome_aluno() or "")
@@ -130,7 +130,6 @@ def show_pessoas_page():
                         novo_cpf_personal = st.number_input("CPF do Personal:", value=cpf_personal_value, min_value=1, format="%d")
                 
                         if st.form_submit_button("Salvar Alterações"):
-                    # Use os SETTERS corretamente
                             aluno_att.set_rg_aluno(novo_rg if novo_rg != 0 else None)
                             aluno_att.set_telefone_aluno(novo_telefone if novo_telefone != 0 else None)
                             aluno_att.set_nome_aluno(novo_nome)
@@ -138,7 +137,6 @@ def show_pessoas_page():
                             aluno_att.set_tipo_plano(novo_plano)
                             aluno_att.set_cpf_pers(novo_cpf_personal if novo_cpf_personal != 0 else None)
                     
-                    # Chama a função de alteração
                             if alterarAluno(aluno_att):
                                 st.success("Aluno atualizado com sucesso!")
                                 st.rerun()
@@ -158,39 +156,41 @@ def show_pessoas_page():
             with st.form("form_professor"):
                 st.subheader("Cadastrar Professor")
 
-                cpf = st.number_input("CPF do Professor:", min_value=1, step=1, format="%d")
-                rg_prof = st.number_input("RG do Professor:", min_value=0, step=1, format="%d") or None
-                nome_prof = st.text_input("Nome do Professor:")
-                horario_prof = st.text_input("Horários:") 
-                telefone_prof = st.number_input("Telefone:", min_value=0, step=1, format="%d") or None
+                cpf = st.number_input("CPF do Professor *", min_value=1, step=1, format="%d")
+                rg_prof = st.number_input("RG do Professor", min_value=0, step=1, format="%d") or None
+                nome_prof = st.text_input("Nome do Professor *")
+                horario_prof = st.text_input("Horários *") 
+                telefone_prof = st.number_input("Telefone *", min_value=1, step=1, format="%d")
                 
                 submitted = st.form_submit_button("Cadastrar Professor")
             
                 if submitted:
-                    if not cpf or not nome_prof or not horario_prof:
+                    if not cpf or not nome_prof or not horario_prof or not telefone_prof:
                         st.error("Preencha todos os campos obrigatórios (*)")
                     else:
                         try:
-                            # CORREÇÃO: Cria o objeto Professor com os dados coletados.
                             professor = Professor(
                                 cpf=int(cpf), 
                                 rg_prof=rg_prof, 
                                 nome_prof=nome_prof, 
                                 horario_prof=horario_prof, 
-                                telefone_prof=telefone_prof
+                                telefone_prof=int(telefone_prof)
                             )
                             if incluirPessoa(professor):
                                 st.success("Professor cadastrado com sucesso!")
                                 st.rerun()
+                            else:
+                                st.error("Falha ao cadastrar: Verifique se o CPF/RG/Telefone já existe.")
                         except Exception as e:
-                            st.error(f"Erro ao cadastrar: {e}")
+                            st.error(f"Erro inesperado no sistema: {e}")
 
 
         elif operacao == "Consultar":
             if st.button("Consultar"):
                 profs = consultarProfessor()
                 if profs:
-                    df = pd.DataFrame(profs, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
+                    columns_list = ["CPF", "RG", "Nome", "Horários", "Telefone"]
+                    df = pd.DataFrame(profs, columns=columns_list)
                     st.dataframe(df, width=1000)
                 else:
                     st.info("Nenhum professor cadastrado.")
@@ -222,7 +222,6 @@ def show_pessoas_page():
                 prof_check = next((p for p in profs if p["CPF"] == cpf), None)
     
                 if prof_check:
-                    # Cria objeto Professor
                     prof_att = Professor(
                         prof_check["CPF"], 
                         prof_check["RG"], 
@@ -239,7 +238,7 @@ def show_pessoas_page():
                         novo_rg = st.number_input("RG do Professor:", value=rg_value, min_value=0, format="%d")
                         novo_nome = st.text_input("Informe seu nome:", value=prof_att.get_nome_prof() or "")
                         novo_horario = st.text_input("Horário do Professor:", value=prof_att.get_horario_prof() or "")
-                        novo_telefone = st.number_input("Telefone:", value=telefone_value, min_value=0, format="%d")
+                        novo_telefone = st.number_input("Telefone:", value=telefone_value, min_value=1, format="%d")
                 
                         if st.form_submit_button("Salvar Alterações"):
                             
@@ -266,36 +265,38 @@ def show_pessoas_page():
             with st.form("form_personal"):
                 st.subheader("Cadastrar Personal")
                 
-                cpf = st.number_input("CPF do Personal:", min_value=1, step=1, format="%d")
-                rg_pers = st.number_input("RG do Personal:", min_value=0, step=1, format="%d") or None
-                nome_pers = st.text_input("Nome do Personal:") 
-                horario_pers = st.text_input("Horario:")
-                telefone_pers = st.number_input("Telefone:", min_value=0, step=1, format="%d") or None
+                cpf = st.number_input("CPF do Personal *", min_value=1, step=1, format="%d")
+                rg_pers = st.number_input("RG do Personal", min_value=0, step=1, format="%d") or None
+                nome_pers = st.text_input("Nome do Personal *") 
+                horario_pers = st.text_input("Horario *")
+                telefone_pers = st.number_input("Telefone *", min_value=1, step=1, format="%d")
                 
                 if st.form_submit_button("Cadastrar Personal"):
-                    if not cpf or not nome_pers or not horario_pers:
+                    if not cpf or not nome_pers or not horario_pers or not telefone_pers:
                         st.error("Preencha todos os campos obrigatórios (*)")
                     else:
                         try:
-                            # CORREÇÃO: Cria o objeto Personal com os dados coletados.
                             personal = Personal(
                                 cpf=int(cpf), 
                                 rg_pers=rg_pers, 
                                 nome_pers=nome_pers, 
                                 horario_pers=horario_pers, 
-                                telefone_pers=telefone_pers
+                                telefone_pers=int(telefone_pers)
                             )
                             if incluirPessoa(personal):
                                 st.success("Personal cadastrado com sucesso!")
                                 st.rerun()
+                            else:
+                                st.error("Falha ao cadastrar: Verifique se o CPF/RG/Telefone já existe.")
                         except Exception as e:
-                            st.error(f"Erro ao cadastrar: {e}")
+                            st.error(f"Erro inesperado no sistema: {e}")
 
         elif operacao == "Consultar":
             if st.button("Consultar"):
                 pers = consultarPersonal()
                 if pers:
-                    df = pd.DataFrame(pers, columns=["CPF", "RG", "Nome", "Horários", "Telefone"])
+                    columns_list = ["CPF", "RG", "Nome", "Horários", "Telefone"]
+                    df = pd.DataFrame(pers, columns=columns_list)
                     st.dataframe(df, width=1000)
                 else:
                     st.info("Nenhum personal cadastrado.")
@@ -329,7 +330,6 @@ def show_pessoas_page():
                 pers_check = next((p for p in pers if p["CPF"] == cpf), None)
     
                 if pers_check:
-                    # Cria objeto Personal
                     pers_att = Personal(
                         pers_check["CPF"], 
                         pers_check["RG"], 
@@ -346,7 +346,7 @@ def show_pessoas_page():
                         novo_rg = st.number_input("RG do Personal:", value=rg_value, min_value=0, format="%d")
                         novo_nome = st.text_input("Informe seu nome:", value=pers_att.get_nome_pers() or "")
                         novo_horario = st.text_input("Horário do Personal:", value=pers_att.get_horario_pers() or "")
-                        novo_telefone = st.number_input("Telefone:", value=telefone_value, min_value=0, format="%d")
+                        novo_telefone = st.number_input("Telefone:", value=telefone_value, min_value=1, format="%d")
                 
                         if st.form_submit_button("Salvar Alterações"):
                     
