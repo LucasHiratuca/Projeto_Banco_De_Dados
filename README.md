@@ -4,4 +4,6 @@
 
 -Cria um banco de dados no arquivo usando SQL3lite
 
--Futuramente, disponibilzar uma ordem de preenchimento de tabelas, para que não exista erros gerados por causa dos relacionamentos e suas Foreign Keys
+-Integra banco de dados com o front-end por meio de conceitos de Orientação a Objetos
+
+-Criação de um front-end simples com Streamlit
